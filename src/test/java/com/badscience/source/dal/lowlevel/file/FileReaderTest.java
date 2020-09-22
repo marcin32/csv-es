@@ -3,6 +3,7 @@ package com.badscience.source.dal.lowlevel.file;
 import com.badscience.source.model.file.PackedFile;
 import com.badscience.source.model.file.RawFile;
 import com.badscience.source.utils.ClassLoaderUtil;
+import com.google.common.io.Resources;
 import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
@@ -26,9 +27,9 @@ public class FileReaderTest {
 
     @Test
     public void shouldReadRawFileLineAfterLine() throws URISyntaxException {
-        final String fileName = "/testFile1.txt";
+        final String fileName = "testFile1.txt";
         final FileReader fileReader = new FileReader();
-        final URL resource = this.getClass().getResource(fileName);
+        final URL resource = Resources.getResource(fileName);
         final File file = new File(resource.toURI());
         final RawFile rawFile = new RawFile(fileName, file.toPath().getParent());
 
@@ -47,7 +48,8 @@ public class FileReaderTest {
         String archiveName1 = "/updates1/2345-DELTA.tar.gz";
         String archiveName2 = "updates1/2345-DELTA.tar.gz";
         final FileReader fileReader = new FileReader();
-        final File file = getFirstNotNull(getFile(archiveName2), getFile(archiveName1));
+        //final File file = getFirstNotNull(getFile(archiveName1), getFile(archiveName2));
+        final File file = getFile(archiveName1);
         final PackedFile rawFile = new PackedFile(fileName, file.toPath());
 
         long lineCount = 0;
@@ -122,14 +124,22 @@ public class FileReaderTest {
     }
 
     private File getFile(String archiveName) throws URISyntaxException {
-        final URL archive = this.getClass().getResource(archiveName);
+        final URL archive = Thread.currentThread().getContextClassLoader().getResource(archiveName);
         final URL resource = ClassLoaderUtil.getResource(archiveName, FileReaderTest.class);
         System.out.println(new File(".").toURI());
         System.out.println(this.getClass().getResource(".").toURI());
         System.out.println(resource);
         System.out.println(archive);
-        final File file = new File(getFirstNotNull(resource, archive).toURI());
+
+        URL resource1 = Resources.getResource(this.getClass(), archiveName);
+        URL firstNotNull = getFirstNotNull(getFirstNotNull(resource, archive), resource1);
+
+        final File file = new File(firstNotNull.toURI());
         return file;
+    }
+
+    void test() {
+        //MoreObjects.firstNonNull(             Thread.currentThread().getContextClassLoader(), Resources.class.getClassLoader())
     }
 
     private <T> T getFirstNotNull(final T resource, final T archive) {
