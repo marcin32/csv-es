@@ -38,14 +38,10 @@ public class FileReaderTest {
     @Test
     public void shouldReadPackedFileLineAfterLine() throws URISyntaxException {
         final String fileName = "testFile1.txt";
-        String archiveName = "/updates1/2345-DELTA.tar.gz";
+        String archiveName1 = "/updates1/2345-DELTA.tar.gz";
+        String archiveName2 = "updates1/2345-DELTA.tar.gz";
         final FileReader fileReader = new FileReader();
-        final URL archive = this.getClass().getResource(archiveName);
-        final URL resource = ClassLoaderUtil.getResource(archiveName, FileReaderTest.class);
-        System.out.println(new File(".").toURI());
-        System.out.println(resource);
-        System.out.println(archive);
-        final File file = new File(getFirstNotNull(resource, archive).toURI());
+        final File file = getFirstNotNull(getFile(archiveName1), getFile(archiveName2));
         final PackedFile rawFile = new PackedFile(fileName, file.toPath());
 
         long lineCount = 0;
@@ -56,7 +52,18 @@ public class FileReaderTest {
         assertEquals("Should read 6 lines", 6, lineCount);
     }
 
-    private URL getFirstNotNull(final URL resource, final URL archive) {
+    private File getFile(String archiveName) throws URISyntaxException {
+        final URL archive = this.getClass().getResource(archiveName);
+        final URL resource = ClassLoaderUtil.getResource(archiveName, FileReaderTest.class);
+        System.out.println(new File(".").toURI());
+        System.out.println(this.getClass().getResource(".").toURI());
+        System.out.println(resource);
+        System.out.println(archive);
+        final File file = new File(getFirstNotNull(resource, archive).toURI());
+        return file;
+    }
+
+    private <T> T getFirstNotNull(final T resource, final T archive) {
         return resource == null ? archive : resource;
     }
 }
