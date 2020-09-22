@@ -3,6 +3,7 @@ package com.badscience.source.dal.lowlevel.file;
 import com.badscience.source.model.file.PackedFile;
 import com.badscience.source.model.file.RawFile;
 import com.badscience.source.utils.ClassLoaderUtil;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -35,6 +36,7 @@ public class FileReaderTest {
         assertEquals("Should read 6 lines", 6, lineCount);
     }
 
+    @Ignore
     @Test
     public void shouldReadPackedFileLineAfterLine() throws URISyntaxException {
         final String fileName = "testFile1.txt";
