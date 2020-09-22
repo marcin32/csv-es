@@ -47,8 +47,8 @@ public class FileReaderTest {
         String archiveName1 = "/updates1/2345-DELTA.tar.gz";
         String archiveName2 = "updates1/2345-DELTA.tar.gz";
         final FileReader fileReader = new FileReader();
-        //final File file = getFirstNotNull(getFile(archiveName1), getFile(archiveName2));
-        final File file = getFile(archiveName1);
+        final File file = getFirstNotNull(getFile(archiveName1), getFile(archiveName2));
+        //final File file = getFile(archiveName2);
         final PackedFile rawFile = new PackedFile(fileName, file.toPath());
 
         long lineCount = 0;
@@ -67,7 +67,7 @@ public class FileReaderTest {
         String archiveName2 = "updates1/2345-DELTA.tar.gz";
         final FileReader fileReader = new FileReader();
         InputStream systemResourceAsStream = ClassLoader.getSystemResourceAsStream(archiveName2);
-        URL systemResource = ClassLoader.getSystemResource(archiveName2);
+        URL systemResource = ClassLoader.getSystemResource(archiveName1);
         Enumeration<URL> systemResources = ClassLoader.getSystemResources("updates1/");
 
         System.out.println("systemResourceAsStream: " + systemResourceAsStream);
@@ -123,18 +123,23 @@ public class FileReaderTest {
     }
 
     private File getFile(String archiveName) throws URISyntaxException {
-        final URL archive = Thread.currentThread().getContextClassLoader().getResource(archiveName);
-        final URL resource = ClassLoaderUtil.getResource(archiveName, FileReaderTest.class);
-        System.out.println(new File(".").toURI());
-        System.out.println(this.getClass().getResource(".").toURI());
-        System.out.println(resource);
-        System.out.println(archive);
+        try {
+            final URL archive = Thread.currentThread().getContextClassLoader().getResource(archiveName);
+            final URL resource = ClassLoaderUtil.getResource(archiveName, FileReaderTest.class);
+            System.out.println(new File(".").toURI());
+            System.out.println(this.getClass().getResource(".").toURI());
+            System.out.println(resource);
+            System.out.println(archive);
 
-        URL resource1 = Resources.getResource(this.getClass(), archiveName);
-        URL firstNotNull = getFirstNotNull(getFirstNotNull(resource, archive), resource1);
+            URL resource1 = Resources.getResource(this.getClass(), archiveName);
+            URL firstNotNull = getFirstNotNull(getFirstNotNull(resource, archive), resource1);
 
-        final File file = new File(firstNotNull.toURI());
-        return file;
+            final File file = new File(firstNotNull.toURI());
+            return file;
+        }catch (Throwable th) {
+
+        }
+        return null;
     }
 
     void test() {
