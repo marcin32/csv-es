@@ -41,7 +41,7 @@ public class FileReaderTest {
     }
 
     //@Ignore
-    //@Test
+    @Test
     public void shouldReadPackedFileLineAfterLine() throws URISyntaxException {
         final String fileName = "testFile1.txt";
         String archiveName1 = "/updates1/2345-DELTA.tar.gz";
