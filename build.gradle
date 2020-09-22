@@ -1,11 +1,8 @@
-/*plugins {
+plugins {
     id 'java'
     id 'maven'
-}*/
-
-apply plugin: 'maven'
-apply plugin: 'java'
-apply plugin: 'idea'
+    id 'idea'
+}
 
 group 'com.marcin32'
 version '1.0-SNAPSHOT'
