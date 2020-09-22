@@ -71,6 +71,6 @@ install {
 }
 
 wrapper {
-    gradleVersion = "6.6.1"
-    distributionType = Wrapper.DistributionType.BIN
+    gradleVersion = "6.5"
+    distributionType = Wrapper.DistributionType.ALL
 }
