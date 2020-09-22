@@ -3,6 +3,8 @@ plugins {
     id 'maven'
 }
 
+apply plugin: 'maven'
+
 group 'com.marcin32'
 version '1.0-SNAPSHOT'
 sourceCompatibility = 1.11

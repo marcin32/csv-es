@@ -1,6 +1,5 @@
 package com.badscience.source.model.file;
 
-import com.badscience.cache.NotImplementedException;
 import com.badscience.source.utils.FilesystemDal;
 
 import java.io.BufferedWriter;
@@ -64,7 +63,7 @@ public class RawFile extends AbstractFile {
     }
 
     public void close() {
-        throw new NotImplementedException();
+        throw new RuntimeException("Not implemented");
     }
 
     @Override
