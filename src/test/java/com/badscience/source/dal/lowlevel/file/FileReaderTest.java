@@ -14,7 +14,11 @@ import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Enumeration;
+import java.util.Iterator;
+import java.util.Spliterator;
+import java.util.Spliterators;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
 
 import static org.junit.Assert.assertEquals;
 
@@ -69,7 +73,8 @@ public class FileReaderTest {
 
         System.out.println("systemResourceAsStream: " + systemResourceAsStream);
         System.out.println("systemResource: " + systemResource);
-        System.out.println("Stream: \n" + Stream.of(systemResources).map(Object::toString).reduce((a, b) -> a + "\n" + b).get());
+        String s = enumerationAsStream(systemResources).map(Object::toString).reduce((a, b) -> a + "\n" + b).get();
+        System.out.println("Stream: \n" + s);
 
         final File file = getFirstNotNull(getFile(archiveName2), getFile(archiveName1));
         final PackedFile rawFile = new PackedFile(fileName, file.toPath());
@@ -80,6 +85,20 @@ public class FileReaderTest {
         }
 
         assertEquals("Should read 6 lines", 6, lineCount);
+    }
+
+    public static <T> Stream<T> enumerationAsStream(Enumeration<T> e) {
+        return StreamSupport.stream(
+                Spliterators.spliteratorUnknownSize(
+                        new Iterator<T>() {
+                            public T next() {
+                                return e.nextElement();
+                            }
+                            public boolean hasNext() {
+                                return e.hasMoreElements();
+                            }
+                        },
+                        Spliterator.ORDERED), false);
     }
 
     private File getFile(String archiveName) throws URISyntaxException {
