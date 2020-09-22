@@ -13,10 +13,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.Enumeration;
-import java.util.Iterator;
-import java.util.Spliterator;
-import java.util.Spliterators;
+import java.util.*;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
 
@@ -43,7 +40,7 @@ public class FileReaderTest {
         assertEquals("Should read 6 lines", 6, lineCount);
     }
 
-    @Ignore
+    //@Ignore
     @Test
     public void shouldReadPackedFileLineAfterLine() throws URISyntaxException {
         final String fileName = "testFile1.txt";
@@ -61,6 +58,7 @@ public class FileReaderTest {
         assertEquals("Should read 6 lines", 6, lineCount);
     }
 
+    @Ignore
     @Test
     public void shouldReadPackedFileLineAfterLine2() throws URISyntaxException, IOException {
         final String fileName = "testFile1.txt";
@@ -76,6 +74,15 @@ public class FileReaderTest {
         String s = enumerationAsStream(systemResources).map(Object::toString).reduce((a, b) -> a + "\n" + b).get();
         System.out.println("Stream: \n" + s);
 
+
+        String s1 = enumerationAsStream(systemResources)
+                .filter(Objects::nonNull)
+                .filter(str -> !str.toString().isEmpty())
+                .flatMap(dir -> getDirContents(dir))
+                .map(Object::toString)
+                .reduce((a, b) -> a + "\n" + b).get();
+        System.out.println("ls of Stream dirs: \n" + s1);
+
         final File file = getFirstNotNull(getFile(archiveName2), getFile(archiveName1));
         final PackedFile rawFile = new PackedFile(fileName, file.toPath());
 
@@ -85,6 +92,19 @@ public class FileReaderTest {
         }
 
         assertEquals("Should read 6 lines", 6, lineCount);
+    }
+
+    private Stream<String> getDirContents(final URL dir) {
+        try {
+            return Stream.of(new File(dir.toURI()).list())
+                    .filter(Objects::nonNull)
+                    .filter(s -> !s.isEmpty())
+                    .peek(System.out::println);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+        }
+        System.out.println("empty dir: " + dir.toString());
+        return Stream.empty();
     }
 
     public static <T> Stream<T> enumerationAsStream(Enumeration<T> e) {
