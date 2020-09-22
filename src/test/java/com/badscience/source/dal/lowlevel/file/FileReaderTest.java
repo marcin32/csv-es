@@ -3,13 +3,17 @@ package com.badscience.source.dal.lowlevel.file;
 import com.badscience.source.model.file.PackedFile;
 import com.badscience.source.model.file.RawFile;
 import com.badscience.source.utils.ClassLoaderUtil;
+import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
 import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Enumeration;
 import java.util.stream.Stream;
 
 import static org.junit.Assert.assertEquals;
@@ -35,12 +39,38 @@ public class FileReaderTest {
         assertEquals("Should read 6 lines", 6, lineCount);
     }
 
+    @Ignore
     @Test
     public void shouldReadPackedFileLineAfterLine() throws URISyntaxException {
         final String fileName = "testFile1.txt";
         String archiveName1 = "/updates1/2345-DELTA.tar.gz";
         String archiveName2 = "updates1/2345-DELTA.tar.gz";
         final FileReader fileReader = new FileReader();
+        final File file = getFirstNotNull(getFile(archiveName2), getFile(archiveName1));
+        final PackedFile rawFile = new PackedFile(fileName, file.toPath());
+
+        long lineCount = 0;
+        try (final Stream<String> stringStream = fileReader.readFile(rawFile)) {
+            lineCount = stringStream.count();
+        }
+
+        assertEquals("Should read 6 lines", 6, lineCount);
+    }
+
+    @Test
+    public void shouldReadPackedFileLineAfterLine2() throws URISyntaxException, IOException {
+        final String fileName = "testFile1.txt";
+        String archiveName1 = "/updates1/2345-DELTA.tar.gz";
+        String archiveName2 = "updates1/2345-DELTA.tar.gz";
+        final FileReader fileReader = new FileReader();
+        InputStream systemResourceAsStream = ClassLoader.getSystemResourceAsStream(archiveName2);
+        URL systemResource = ClassLoader.getSystemResource(archiveName2);
+        Enumeration<URL> systemResources = ClassLoader.getSystemResources("updates1/");
+
+        System.out.println("systemResourceAsStream: " + systemResourceAsStream);
+        System.out.println("systemResource: " + systemResource);
+        System.out.println("Stream: \n" + Stream.of(systemResources).map(Object::toString).reduce((a, b) -> a + "\n" + b).get());
+
         final File file = getFirstNotNull(getFile(archiveName2), getFile(archiveName1));
         final PackedFile rawFile = new PackedFile(fileName, file.toPath());
 
