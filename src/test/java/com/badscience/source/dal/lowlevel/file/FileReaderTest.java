@@ -27,9 +27,9 @@ public class FileReaderTest {
 
     @Test
     public void shouldReadRawFileLineAfterLine() throws URISyntaxException {
-        final String fileName = "testFile1.txt";
+        final String fileName = "/testFile1.txt";
         final FileReader fileReader = new FileReader();
-        final URL resource = Resources.getResource(fileName);
+        final URL resource = Resources.getResource(this.getClass(), fileName);
         final File file = new File(resource.toURI());
         final RawFile rawFile = new RawFile(fileName, file.toPath().getParent());
 
