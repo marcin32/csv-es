@@ -28,8 +28,7 @@ public class FileReaderTest {
 
         long lineCount = 0;
         try (final Stream<String> stringStream = fileReader.readFile(rawFile)) {
-            lineCount = stringStream
-                    .count();
+            lineCount = stringStream.count();
         }
 
         assertEquals("Should read 6 lines", 6, lineCount);
@@ -40,13 +39,13 @@ public class FileReaderTest {
         final String fileName = "testFile1.txt";
         final FileReader fileReader = new FileReader();
         final URL archive = this.getClass().getResource("/updates1/2345-DELTA.tar.gz");
+        System.out.println(archive);
         final File file = new File(archive.toURI());
         final PackedFile rawFile = new PackedFile(fileName, file.toPath());
 
         long lineCount = 0;
         try (final Stream<String> stringStream = fileReader.readFile(rawFile)) {
-            lineCount = stringStream
-                    .count();
+            lineCount = stringStream.count();
         }
 
         assertEquals("Should read 6 lines", 6, lineCount);
