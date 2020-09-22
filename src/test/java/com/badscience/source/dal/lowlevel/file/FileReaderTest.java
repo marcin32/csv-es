@@ -42,6 +42,7 @@ public class FileReaderTest {
         final FileReader fileReader = new FileReader();
         final URL archive = this.getClass().getResource(archiveName);
         final URL resource = ClassLoaderUtil.getResource(archiveName, FileReaderTest.class);
+        System.out.println(new File(".").toURI());
         System.out.println(resource);
         System.out.println(archive);
         final File file = new File(getFirstNotNull(resource, archive).toURI());
