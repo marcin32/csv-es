@@ -41,7 +41,7 @@ public class FileReaderTest {
         String archiveName1 = "/updates1/2345-DELTA.tar.gz";
         String archiveName2 = "updates1/2345-DELTA.tar.gz";
         final FileReader fileReader = new FileReader();
-        final File file = getFirstNotNull(getFile(archiveName1), getFile(archiveName2));
+        final File file = getFirstNotNull(getFile(archiveName2), getFile(archiveName1));
         final PackedFile rawFile = new PackedFile(fileName, file.toPath());
 
         long lineCount = 0;
