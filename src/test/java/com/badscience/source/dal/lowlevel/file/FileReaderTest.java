@@ -4,7 +4,6 @@ import com.badscience.source.model.file.PackedFile;
 import com.badscience.source.model.file.RawFile;
 import com.badscience.source.utils.ClassLoaderUtil;
 import com.google.common.io.Resources;
-import org.junit.Ignore;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
@@ -27,7 +26,7 @@ public class FileReaderTest {
 
     @Test
     public void shouldReadRawFileLineAfterLine() throws URISyntaxException {
-        final String fileName = "/testFile1.txt";
+        final String fileName = "testFile1.txt";
         final FileReader fileReader = new FileReader();
         final URL resource = Resources.getResource(this.getClass(), fileName);
         final File file = new File(resource.toURI());
@@ -42,7 +41,7 @@ public class FileReaderTest {
     }
 
     //@Ignore
-    @Test
+    //@Test
     public void shouldReadPackedFileLineAfterLine() throws URISyntaxException {
         final String fileName = "testFile1.txt";
         String archiveName1 = "/updates1/2345-DELTA.tar.gz";
@@ -60,8 +59,8 @@ public class FileReaderTest {
         assertEquals("Should read 6 lines", 6, lineCount);
     }
 
-    @Ignore
-    @Test
+    //@Ignore
+    //@Test
     public void shouldReadPackedFileLineAfterLine2() throws URISyntaxException, IOException {
         final String fileName = "testFile1.txt";
         String archiveName1 = "/updates1/2345-DELTA.tar.gz";
