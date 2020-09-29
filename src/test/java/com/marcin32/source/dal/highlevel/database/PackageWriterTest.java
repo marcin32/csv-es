@@ -1,4 +1,4 @@
-package com.marcin32.source.dal.lowlevel.csv;
+package com.marcin32.source.dal.highlevel.database;
 
 import com.marcin32.source.writing.WritingDescriptorsDal;
 import org.junit.Rule;
@@ -8,7 +8,7 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
 
-public class CsvWriterTest {
+public class PackageWriterTest {
 
     private final WritingDescriptorsDal writingDescriptorsDal = new WritingDescriptorsDal();
 
@@ -22,28 +22,28 @@ public class CsvWriterTest {
 
     @Test
     public void shouldWriteFullUpdateAndCreateItsCopyAsDeltaWhenItIsTheFirstOne() throws IOException {
-        /*final Path path = temporaryFolder.getRoot().toPath();
-        final WritingPackageDescriptor descriptorForWriting = writingDescriptorsDal.getDescriptorForWriting(path);
-
-        final TestEntity1 testEntity1 = new TestEntity1("a");
-        final TestEntity1 testEntity2 = new TestEntity1("b");
-        final TestEntity1 testEntity3 = new TestEntity1("c");
-
-        descriptorForWriting.storeEntity("a", TABLE_NAME, testEntity1);
-        descriptorForWriting.storeEntity("b", TABLE_NAME, testEntity2);
-        descriptorForWriting.storeEntity("c", TABLE_NAME, testEntity3);
-
-        descriptorForWriting.saveUpdateAndFinish();
-
-        final ReadingDescriptorsDal readingDescriptorsDal = new ReadingDescriptorsDal();
-        final Optional<ReadingPackageDescriptor> lastDelta = readingDescriptorsDal.getLastDelta(path);
-        assertTrue(lastDelta.isPresent());
-
-        final Set<TestEntity1> testTable1 = lastDelta.get().readEntities(TABLE_NAME, TestEntity1.class)
-                .collect(Collectors.toSet());
-
-        final HashSet<TestEntity1> testEntitySet2 = new HashSet<>(List.of(testEntity1, testEntity2, testEntity3));
-        assertEquals(testTable1, testEntitySet2);*/
+//        final Path path = temporaryFolder.getRoot().toPath();
+//        final WritingPackageDescriptor descriptorForWriting = writingDescriptorsDal.getDescriptorForWriting(path);
+//
+//        final TestEntity1 testEntity1 = new TestEntity1("a");
+//        final TestEntity1 testEntity2 = new TestEntity1("b");
+//        final TestEntity1 testEntity3 = new TestEntity1("c");
+//
+//        descriptorForWriting.storeEntity("a", TABLE_NAME, testEntity1);
+//        descriptorForWriting.storeEntity("b", TABLE_NAME, testEntity2);
+//        descriptorForWriting.storeEntity("c", TABLE_NAME, testEntity3);
+//
+//        descriptorForWriting.saveUpdateAndFinish();
+//
+//        final ReadingDescriptorsDal readingDescriptorsDal = new ReadingDescriptorsDal();
+//        final Optional<ReadingPackageDescriptor> lastDelta = readingDescriptorsDal.getLastDelta(path);
+//        assertTrue(lastDelta.isPresent());
+//
+//        final Set<TestEntity1> testTable1 = lastDelta.get().readEntities(TABLE_NAME, TestEntity1.class)
+//                .collect(Collectors.toSet());
+//
+//        final HashSet<TestEntity1> testEntitySet2 = new HashSet<>(List.of(testEntity1, testEntity2, testEntity3));
+//        assertEquals(testTable1, testEntitySet2);
     }
 
     @Test
