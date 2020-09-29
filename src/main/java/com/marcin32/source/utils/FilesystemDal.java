@@ -11,6 +11,7 @@ import org.apache.commons.compress.utils.IOUtils;
 import org.apache.commons.io.FileUtils;
 
 import java.io.*;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
@@ -73,8 +74,8 @@ public class FilesystemDal {
         return Optional.empty();
     }
 
-    public Optional<File> getFile(final AbstractPackageDescriptor abstractPackageDescriptor,
-                                  final String databaseName) throws IOException {
+    public Optional<File> getFileFromResources(final AbstractPackageDescriptor abstractPackageDescriptor,
+                                               final String databaseName) throws IOException {
         if (abstractPackageDescriptor.getPackageType().equals(PackageType.DIRECTORY)) {
             final Path path = Paths.get(abstractPackageDescriptor.getPath().toString(), databaseName);
             return Optional.of(path.toFile());
@@ -184,6 +185,11 @@ public class FilesystemDal {
         }
 
         return name.replaceAll("[\u0000-\u001f<>:\"/\\\\|?*\u007f]+", "").trim();
+    }
+
+    public static File getFileFromResources(final String archiveName) {
+        final URL url = ClassLoader.getSystemResource(archiveName);
+        return new File(url.getFile());
     }
 
     private FilesystemDal() {
