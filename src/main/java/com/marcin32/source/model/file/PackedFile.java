@@ -30,4 +30,9 @@ public class PackedFile extends AbstractFile {
         }
         return Stream.empty();
     }
+
+    @Override
+    public long getNumberOfLines() {
+        throw new UnsupportedOperationException("Not yet implemented");
+    }
 }

@@ -6,20 +6,20 @@ import java.io.IOException;
 
 public class FileWriter {
 
-    public synchronized void appendFile(final String line,
-                                        final RawFile rawFile) {
+    public void appendFile(final String line,
+                           final RawFile rawFile) {
 
         try {
             rawFile.appendLine(line);
-        } catch (IOException | IllegalAccessException e) {
+        } catch (final IOException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }
 
-    public synchronized void closeFile(final RawFile rawFile)  {
+    public void closeFile(final RawFile rawFile) {
         try {
             rawFile.close();
-        } catch (IOException | IllegalAccessException e) {
+        } catch (final IOException | IllegalAccessException e) {
             e.printStackTrace();
         }
     }

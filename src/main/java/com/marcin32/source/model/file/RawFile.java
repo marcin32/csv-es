@@ -47,6 +47,7 @@ public class RawFile extends AbstractFile {
         return directoryPath.resolve(fileName);
     }
 
+    @Override
     public long getNumberOfLines() {
         return totalNumberOfLines.sum();
     }

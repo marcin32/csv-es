@@ -5,33 +5,31 @@ import com.marcin32.source.dal.lowlevel.file.FileWriter;
 import com.marcin32.source.model.file.RawFile;
 import com.marcin32.source.utils.ShaUtil;
 
-public class CsvWriter extends AbstractCsvDal {
+public class CsvWriter {
 
-    private final FileWriter fileWriter = new FileWriter();
+    private static final FileWriter fileWriter = new FileWriter();
 
-    private final RawFile rawFile;
-
-    public CsvWriter(final RawFile rawFile) {
-        this.rawFile = rawFile;
+    public CsvWriter() {
     }
 
-    public <ENTITYTYPE> void saveEntity(final String uuid,
-                                        final ENTITYTYPE entity) {
+    public <ENTITYTYPE> void saveEntity(final RawFile rawFile,
+                                        final String uuid,
+                                        final String serializedEntity) {
 
-        final String line = prepareContent(uuid, entity);
+        final String line = prepareContent(uuid, serializedEntity);
         fileWriter.appendFile(line, rawFile);
     }
 
     private <ENTITYTYPE> String prepareContent(final String uuid,
-                                               final ENTITYTYPE entity) {
-        final String content = gson.toJson(entity);
+                                               final String serializedEntity) {
+        //final String content = gson.toJson(entity);
 
         return uuid + Constants.CSV_SEPARATOR_FOR_WRITING +
                 System.currentTimeMillis() +
                 Constants.CSV_SEPARATOR_FOR_WRITING +
-                ShaUtil.shaHash(content) +
+                ShaUtil.shaHash(serializedEntity) +
                 Constants.CSV_SEPARATOR_FOR_WRITING +
-                content;
+                serializedEntity;
     }
 
 

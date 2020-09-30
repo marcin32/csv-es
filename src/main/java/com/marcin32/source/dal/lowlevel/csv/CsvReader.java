@@ -9,7 +9,7 @@ import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-public class CsvReader extends AbstractCsvDal {
+public class CsvReader {
 
     private final static FileReader fileReader = new FileReader();
 
