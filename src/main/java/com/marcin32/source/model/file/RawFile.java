@@ -15,7 +15,8 @@ public class RawFile extends AbstractFile {
 
     private final Path directoryPath;
     private final LongAdder totalNumberOfLines = new LongAdder();
-    private boolean closed = true;
+    private boolean closed = false;
+    private boolean dirty = false;
     private BufferedWriter writer;
 
 
@@ -59,17 +60,20 @@ public class RawFile extends AbstractFile {
         // is this a "synchronized" bug?
         writerInstance.flush();
         totalNumberOfLines.increment();
-        closed = false;
+        dirty = true;
     }
 
-    public void close() {
-        throw new RuntimeException("Not implemented");
+    public void close() throws IOException, IllegalAccessException {
+        final BufferedWriter writerInstance = getWriter();
+        writerInstance.close();
+        closed = true;
+        dirty = false;
     }
 
     @Override
     public Stream<String> readFile() throws IllegalAccessException, IOException {
 
-        if (!closed) {
+        if (dirty && !closed) {
             throw new IllegalAccessException(String.format("File %s is not yet closed!", this.getFileName()));
         }
 

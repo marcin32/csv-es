@@ -10,7 +10,7 @@ import java.util.stream.Stream;
 @AllArgsConstructor
 public abstract class AbstractFile {
 
-    private String fileName;
+    private final String fileName;
 
     public abstract Stream<String> readFile() throws IllegalAccessException, IOException;
 }

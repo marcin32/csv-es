@@ -31,7 +31,7 @@ public class ReadingUpdateDescriptorTest {
     @Test
     public void shouldReadFromArchive() throws IOException, URISyntaxException {
         /*final URI basePath = this.getClass().getResource("/updates1").toURI();
-        final Path filePath = Paths.get(Paths.get(basePath).toString(), "2345-DELTA.tar.gz");
+        final Path filePath = Paths.get(Paths.get(basePath).toString(), "2345-DELTA_PACKAGE.tar.gz");
         final ReadingPackageDescriptor abstractUpdateDescriptor = new ReadingPackageDescriptor(2345L, filePath,
                 UpdateScope.DELTA, UpdateType.ARCHIVE);
 

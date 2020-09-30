@@ -15,4 +15,12 @@ public class FileWriter {
             e.printStackTrace();
         }
     }
+
+    public synchronized void closeFile(final RawFile rawFile)  {
+        try {
+            rawFile.close();
+        } catch (IOException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
 }

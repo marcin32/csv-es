@@ -26,8 +26,8 @@ public class ReadingDescriptorsDalTest {
         temporaryFolder.newFile("4567-FULL_UPDATE.tar.gz");
 
         temporaryFolder.newFile("1234-DELTA.tar.gz");
-        temporaryFolder.newFile("2345-DELTA.tar.gz");
-        temporaryFolder.newFile("3456-DELTA.tar.gz");
+        temporaryFolder.newFile("2345-DELTA_PACKAGE.tar.gz");
+        temporaryFolder.newFile("3456-DELTA_PACKAGE.tar.gz");
         temporaryFolder.newFile("4567-DELTA.tar.gz");
     }
 
