@@ -81,6 +81,6 @@ public class PackageReaderTest {
 
     private PackageDescriptor get1234Package() {
         final Path path = new File(ClassLoader.getSystemResource("updates1/").getPath()).toPath();
-        return new PackageDescriptor(1234L, PackageScope.DELTA_PACKAGE, PackageType.DIRECTORY, path);
+        return new PackageDescriptor(1234L, PackageScope.FULL_PACKAGE, PackageType.DIRECTORY, path);
     }
 }
