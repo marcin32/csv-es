@@ -4,6 +4,7 @@ import com.marcin32.source.base.PackageScope;
 import com.marcin32.source.base.PackageType;
 import com.marcin32.source.model.file.AbstractFile;
 import com.marcin32.source.model.file.PackedFile;
+import com.marcin32.source.model.file.RawFile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -40,6 +41,9 @@ public class PackageDescriptor {
     }
 
     public AbstractFile getMetadataFile() {
-        return new PackedFile(METADATA_FILENAME, basePathToPackageLocation.resolve(getPackageName()));
+        if (this.packageType.equals(PackageType.ARCHIVE)) {
+            return new PackedFile(METADATA_FILENAME, getBasePathWithArchiveName());
+        }
+        return new RawFile(METADATA_FILENAME, getBasePathWithArchiveName());
     }
 }

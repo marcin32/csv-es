@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 public class RawFileTest {
 
     @Rule
-    public TemporaryFolder folder= new TemporaryFolder();
+    public TemporaryFolder folder = new TemporaryFolder();
 
     @Rule
     public ExpectedException expectedException = ExpectedException.none();
@@ -35,8 +35,8 @@ public class RawFileTest {
         final Path temporaryPath = folder.newFolder().toPath();
         final RawFile rawFile = new RawFile(fileName, temporaryPath);
 
-       assertEquals(temporaryPath, rawFile.getDirectoryPath());
-       assertEquals(temporaryPath.resolve(fileName), rawFile.getDirectoryPathWithFileName());
+        assertEquals(temporaryPath, rawFile.getDirectoryPath());
+        assertEquals(temporaryPath.resolve(fileName), rawFile.getDirectoryPathWithFileName());
     }
 
 }

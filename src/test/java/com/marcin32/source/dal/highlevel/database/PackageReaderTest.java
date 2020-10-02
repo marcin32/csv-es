@@ -55,8 +55,32 @@ public class PackageReaderTest {
         }
     }
 
+    @Test
+    public void shouldReadEntitiesBasedOnMetadataFromDirectory() throws IOException {
+        final PackageDescriptor package1234 = get1234Package();
+        final PackageReader packageReader = new PackageReader(package1234);
+
+        try (final Stream<PackedTableMetadata> tableMetadataStream = packageReader.listTables()) {
+            final Optional<PackedTableMetadata> any = tableMetadataStream.findAny();
+            assertTrue(any.isPresent());
+
+            final PackedTableMetadata packedTableMetadata1 = any.get();
+
+            assertEquals(packedTableMetadata1.getClassName(), TestEntity1.class.getSimpleName() + Constants.TABLE_EXTENSION);
+            try (final Stream<SourceEntry<TestEntity1>> sourceEntryStream = packageReader.readEntities(TestEntity1.class)) {
+                long numberOfEntities = sourceEntryStream.count();
+                assertEquals(numberOfEntities, packedTableMetadata1.getNumberOfEntities());
+            }
+        }
+    }
+
     private PackageDescriptor get2345Package() {
         final Path path = new File(ClassLoader.getSystemResource("updates1/").getPath()).toPath();
         return new PackageDescriptor(2345L, PackageScope.DELTA_PACKAGE, PackageType.ARCHIVE, path);
+    }
+
+    private PackageDescriptor get1234Package() {
+        final Path path = new File(ClassLoader.getSystemResource("updates1/").getPath()).toPath();
+        return new PackageDescriptor(1234L, PackageScope.DELTA_PACKAGE, PackageType.DIRECTORY, path);
     }
 }

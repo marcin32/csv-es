@@ -1,7 +1,5 @@
 package com.marcin32.source.model.file;
 
-import com.marcin32.source.utils.FilesystemDal;
-
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
@@ -43,8 +41,9 @@ public class RawFile extends AbstractFile {
     }
 
     public Path getDirectoryPathWithFileName() {
-        final String fileName = FilesystemDal.sanitizeFileName(getFileName());
-        return directoryPath.resolve(fileName);
+        //final String fileName = FilesystemDal.sanitizeFileName(getFileName());
+        //final String fileName = FilesystemDal.sanitizeFileName(getFileName());
+        return directoryPath.resolve(getFileName());
     }
 
     @Override
