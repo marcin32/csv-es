@@ -2,6 +2,7 @@ package com.marcin32.source.model;
 
 import com.marcin32.source.base.PackageScope;
 import com.marcin32.source.base.PackageType;
+import com.marcin32.source.model.file.AbstractFile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -11,15 +12,15 @@ import static com.marcin32.source.base.Constants.ARCHIVE_EXTENSION;
 
 @Getter
 @AllArgsConstructor
-public abstract class AbstractPackageDescriptor {
+public class PackageDescriptor {
 
     Long timestamp;
-
-    Path path;
 
     PackageScope packageScope;
 
     PackageType packageType;
+
+    Path basePathToPackageLocation;
 
     public String getPackageName() {
         final StringBuilder sb = new StringBuilder(String.valueOf(timestamp));
@@ -29,5 +30,9 @@ public abstract class AbstractPackageDescriptor {
         }
 
         return sb.toString();
+    }
+
+    public AbstractFile getMetadataFile() {
+        return null;
     }
 }

@@ -1,27 +1,15 @@
 package com.marcin32.source.writing;
 
-import com.marcin32.source.base.Constants;
-import com.marcin32.source.base.PackageScope;
-import com.marcin32.source.base.PackageType;
-import com.marcin32.source.dal.lowlevel.file.FileWriter;
-import com.marcin32.source.model.AbstractPackageDescriptor;
-import com.marcin32.source.utils.FilesystemDal;
+public class WritingPackageDescriptor  {
 
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
-import java.util.Set;
-
-public class WritingPackageDescriptor extends AbstractPackageDescriptor {
-
-    private final FileWriter fileWriter = new FileWriter();
-
-    private final FileDescriptors fileDescriptors = new FileDescriptors();
-
-    public WritingPackageDescriptor(final Long timestamp, final Path path, final PackageScope packageScope,
-                                    final PackageType packageType) {
-        super(timestamp, path, packageScope, packageType);
-    }
+//    private final FileWriter fileWriter = new FileWriter();
+//
+//    private final FileDescriptors fileDescriptors = new FileDescriptors();
+//
+//    public WritingPackageDescriptor(final Long timestamp, final Path path, final PackageScope packageScope,
+//                                    final PackageType packageType) {
+//        super(timestamp, path, packageScope, packageType);
+//    }
 
     /*public <ENTITYTYPE> void storeEntity(final String uuid, final String tableName, final ENTITYTYPE entity) {
         final CsvWriter csvWriter = new CsvWriter(this, fileDescriptors);
@@ -46,33 +34,33 @@ public class WritingPackageDescriptor extends AbstractPackageDescriptor {
         fileWriter.appendFile(uuid, TIMESTAMPS_PREFIX + fileName, this, fileDescriptors);
     }*/
 
-    void archiveCurrentUpdate() {
+//    void archiveCurrentUpdate() {
+//
+//        final String updateDirectory = this.getPath().getFileName().toString();
+//        final File[] files = FilesystemDal.listFiles(this.getPath());
+//
+//
+//        final String updateArchiveName = updateDirectory + Constants.ARCHIVE_EXTENSION;
+//        final Path pathToOutputArchive = getPath().getParent().resolve(updateArchiveName);
+//
+//        try {
+//            FilesystemDal.compress(pathToOutputArchive.toString(), files);
+//            FilesystemDal.deleteFolder(getPath().toFile());
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
-        final String updateDirectory = this.getPath().getFileName().toString();
-        final File[] files = FilesystemDal.listFiles(this.getPath());
-
-
-        final String updateArchiveName = updateDirectory + Constants.ARCHIVE_EXTENSION;
-        final Path pathToOutputArchive = getPath().getParent().resolve(updateArchiveName);
-
-        try {
-            FilesystemDal.compress(pathToOutputArchive.toString(), files);
-            FilesystemDal.deleteFolder(getPath().toFile());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-    Set<String> getAllStoredFileNames() {
-        return fileDescriptors.getFileNames();
-    }
+//    Set<String> getAllStoredFileNames() {
+//        return fileDescriptors.getFileNames();
+//    }
 
     /*ReadingPackageDescriptor getReadingDescriptorForCurrentPackage() {
         return new ReadingPackageDescriptor(this.getTimestamp(), this.getPath(),
                 this.getUpdateScope(), this.getUpdateType());
     }*/
 
-    void closeFiles() {
-        fileDescriptors.closeAllFiles();
-    }
+//    void closeFiles() {
+//        fileDescriptors.closeAllFiles();
+//    }
 }

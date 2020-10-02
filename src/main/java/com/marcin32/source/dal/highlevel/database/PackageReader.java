@@ -1,10 +1,56 @@
 package com.marcin32.source.dal.highlevel.database;
 
 import com.marcin32.source.dal.highlevel.table.TableReader;
+import com.marcin32.source.model.PackageDescriptor;
+import com.marcin32.source.model.PackedTableMetadata;
+import com.marcin32.source.model.SourceEntry;
+import com.marcin32.source.model.csv.MetadataAdapter;
+import com.marcin32.source.model.file.AbstractFile;
 
-public class PackageReader extends AbstractPackageDal {
+import java.io.IOException;
+import java.util.stream.Stream;
+
+public class PackageReader implements IPackageDal {
+
+    private final PackageDescriptor packageDescriptor;
 
     private final TableReader tableReader = new TableReader();
+    public static final MetadataAdapter METADATA_FORMAT_ADAPTER = new MetadataAdapter();
+
+    public PackageReader(final PackageDescriptor packageDescriptor) {
+        this.packageDescriptor = packageDescriptor;
+    }
+
+    @Override
+    public <ENTITYTYPE> Stream<SourceEntry<ENTITYTYPE>> readEntities(Class<ENTITYTYPE> entityType) throws IOException {
+        return null;
+    }
+
+    @Override
+    public <ENTITYTYPE> Stream<String> readUuidsOfTimestampedEntities(Class<ENTITYTYPE> entityType) {
+        return null;
+    }
+
+    @Override
+    public <ENTITYTYPE> boolean checkWhetherPackageContainsEntity(ENTITYTYPE entity) {
+        return false;
+    }
+
+    @Override
+    public <ENTITYTYPE> boolean numberOfEntities(Class<ENTITYTYPE> entity) {
+        return false;
+    }
+
+    @Override
+    public Stream<PackedTableMetadata> listTables() {
+        try {
+            final AbstractFile metadataFile = packageDescriptor.getMetadataFile();
+            return tableReader.readEntities(metadataFile, METADATA_FORMAT_ADAPTER);
+        } catch (final IOException e) {
+            e.printStackTrace();
+        }
+        return Stream.empty();
+    }
 
     //private final CsvReader csvReader = new CsvReader();
 

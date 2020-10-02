@@ -1,7 +1,7 @@
 package com.marcin32.source.utils;
 
 import com.marcin32.source.base.PackageType;
-import com.marcin32.source.model.AbstractPackageDescriptor;
+import com.marcin32.source.model.PackageDescriptor;
 import com.marcin32.source.model.file.PackedFile;
 import org.apache.commons.compress.archivers.tar.TarArchiveEntry;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
@@ -74,10 +74,10 @@ public class FilesystemDal {
         return Optional.empty();
     }
 
-    public Optional<File> getFileFromResources(final AbstractPackageDescriptor abstractPackageDescriptor,
+    public Optional<File> getFileFromResources(final PackageDescriptor packageDescriptor,
                                                final String databaseName) throws IOException {
-        if (abstractPackageDescriptor.getPackageType().equals(PackageType.DIRECTORY)) {
-            final Path path = Paths.get(abstractPackageDescriptor.getPath().toString(), databaseName);
+        if (packageDescriptor.getPackageType().equals(PackageType.DIRECTORY)) {
+            final Path path = Paths.get(packageDescriptor.getBasePathToPackageLocation().toString(), databaseName);
             return Optional.of(path.toFile());
         }
 

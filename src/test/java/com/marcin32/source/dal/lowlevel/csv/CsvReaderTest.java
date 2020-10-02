@@ -1,6 +1,5 @@
 package com.marcin32.source.dal.lowlevel.csv;
 
-import com.marcin32.source.model.CsvEntry;
 import com.marcin32.source.model.file.PackedFile;
 import com.marcin32.source.model.file.RawFile;
 import com.marcin32.source.utils.FilesystemDal;
@@ -28,9 +27,9 @@ public class CsvReaderTest {
         final RawFile rawFile = new RawFile(fileName, file.toPath().getParent());
 
         long sum = 0;
-        try (final Stream<CsvEntry> stringStream = csvReader.readCsv(rawFile)) {
+        try (final Stream<String[]> stringStream = csvReader.readCsv(rawFile)) {
             sum = stringStream
-                    .mapToLong(CsvEntry::getTimestamp)
+                    .mapToLong(csvLine -> Long.parseLong(csvLine[1]))
                     .sum();
         }
 
@@ -46,7 +45,7 @@ public class CsvReaderTest {
         final PackedFile packedFile = new PackedFile(fileName, file.toPath());
 
         long lineCount = 0;
-        try (final Stream<CsvEntry> stringStream = csvReader.readCsv(packedFile)) {
+        try (final Stream<String[]> stringStream = csvReader.readCsv(packedFile)) {
             lineCount = stringStream.count();
         }
 
