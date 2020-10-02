@@ -3,6 +3,7 @@ package com.marcin32.source.model;
 import com.marcin32.source.base.PackageScope;
 import com.marcin32.source.base.PackageType;
 import com.marcin32.source.model.file.AbstractFile;
+import com.marcin32.source.model.file.PackedFile;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -13,6 +14,8 @@ import static com.marcin32.source.base.Constants.ARCHIVE_EXTENSION;
 @Getter
 @AllArgsConstructor
 public class PackageDescriptor {
+
+    private final static String METADATA_FILENAME = "metadata.csv";
 
     Long timestamp;
 
@@ -32,7 +35,11 @@ public class PackageDescriptor {
         return sb.toString();
     }
 
+    public Path getBasePathWithArchiveName() {
+        return basePathToPackageLocation.resolve(getPackageName());
+    }
+
     public AbstractFile getMetadataFile() {
-        return null;
+        return new PackedFile(METADATA_FILENAME, basePathToPackageLocation.resolve(getPackageName()));
     }
 }

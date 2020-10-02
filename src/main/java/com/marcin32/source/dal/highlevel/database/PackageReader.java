@@ -1,11 +1,13 @@
 package com.marcin32.source.dal.highlevel.database;
 
+import com.marcin32.source.base.Constants;
 import com.marcin32.source.dal.highlevel.table.TableReader;
 import com.marcin32.source.model.PackageDescriptor;
 import com.marcin32.source.model.PackedTableMetadata;
 import com.marcin32.source.model.SourceEntry;
 import com.marcin32.source.model.csv.MetadataAdapter;
 import com.marcin32.source.model.file.AbstractFile;
+import com.marcin32.source.model.file.PackedFile;
 
 import java.io.IOException;
 import java.util.stream.Stream;
@@ -22,22 +24,23 @@ public class PackageReader implements IPackageDal {
     }
 
     @Override
-    public <ENTITYTYPE> Stream<SourceEntry<ENTITYTYPE>> readEntities(Class<ENTITYTYPE> entityType) throws IOException {
+    public <ENTITYTYPE> Stream<SourceEntry<ENTITYTYPE>> readEntities(final Class<ENTITYTYPE> entityType) throws IOException {
+        final AbstractFile tableFile = getTableFile(entityType);
+        return tableReader.readEntities(tableFile, entityType);
+    }
+
+    @Override
+    public <ENTITYTYPE> Stream<String> readUuidsOfTimestampedEntities(final Class<ENTITYTYPE> entityType) {
         return null;
     }
 
     @Override
-    public <ENTITYTYPE> Stream<String> readUuidsOfTimestampedEntities(Class<ENTITYTYPE> entityType) {
-        return null;
-    }
-
-    @Override
-    public <ENTITYTYPE> boolean checkWhetherPackageContainsEntity(ENTITYTYPE entity) {
+    public <ENTITYTYPE> boolean checkWhetherPackageContainsEntity(final ENTITYTYPE entity) {
         return false;
     }
 
     @Override
-    public <ENTITYTYPE> boolean numberOfEntities(Class<ENTITYTYPE> entity) {
+    public <ENTITYTYPE> boolean numberOfEntities(final Class<ENTITYTYPE> entity) {
         return false;
     }
 
@@ -50,6 +53,19 @@ public class PackageReader implements IPackageDal {
             e.printStackTrace();
         }
         return Stream.empty();
+    }
+
+    public <ENTITYTYPE> AbstractFile getTableFile(final Class<ENTITYTYPE> entityType) {
+        return listTables()
+                .filter(tableMetadata -> tableMetadata.getClassName().equals(entityType.getSimpleName()+ Constants.TABLE_EXTENSION))
+                .findFirst()
+                .map(this::mapTableMetadataFile)
+                .orElseThrow();
+    }
+
+    private AbstractFile mapTableMetadataFile(final PackedTableMetadata tableMetadataFile) {
+        final PackedFile packedFile = new PackedFile(tableMetadataFile.getClassName(), packageDescriptor.getBasePathWithArchiveName());
+        return packedFile;
     }
 
     //private final CsvReader csvReader = new CsvReader();

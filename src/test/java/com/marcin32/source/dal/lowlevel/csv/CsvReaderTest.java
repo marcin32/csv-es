@@ -38,7 +38,7 @@ public class CsvReaderTest {
 
     @Test
     public void shouldReadPackedFileLineAfterLine() throws IOException {
-        final String fileName = "testDatabase1.csv";
+        final String fileName = "TestEntity1.csv";
         String archiveName = "updates1/2345-DELTA_PACKAGE.tar.gz";
         final CsvReader csvReader = new CsvReader();
         final File file = FilesystemDal.getFileFromResources(archiveName);

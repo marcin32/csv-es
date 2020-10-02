@@ -1,6 +1,7 @@
 package com.marcin32.source.dal.highlevel.database;
 
 import com.marcin32.source.TestEntity1;
+import com.marcin32.source.base.Constants;
 import com.marcin32.source.base.PackageScope;
 import com.marcin32.source.base.PackageType;
 import com.marcin32.source.model.PackageDescriptor;
@@ -46,7 +47,7 @@ public class PackageReaderTest {
 
             final PackedTableMetadata packedTableMetadata1 = any.get();
 
-            assertEquals(packedTableMetadata1.getClassName(), TestEntity1.class.getSimpleName());
+            assertEquals(packedTableMetadata1.getClassName(), TestEntity1.class.getSimpleName() + Constants.TABLE_EXTENSION);
             try (final Stream<SourceEntry<TestEntity1>> sourceEntryStream = packageReader.readEntities(TestEntity1.class)) {
                 long numberOfEntities = sourceEntryStream.count();
                 assertEquals(numberOfEntities, packedTableMetadata1.getNumberOfEntities());

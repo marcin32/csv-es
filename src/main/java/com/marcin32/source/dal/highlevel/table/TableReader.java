@@ -15,8 +15,8 @@ import java.util.stream.Stream;
 public class TableReader extends AbstractTableReader {
 
     private final static CsvReader csvReader = new CsvReader();
-    public static final UnchangedEntityAdapter UNCHANGED_ENTITY_FORMAT_ADAPTER = new UnchangedEntityAdapter();
-    public static final ChangedEntityAdapter CHANGED_ENTITY_FORMAT_ADAPTER = new ChangedEntityAdapter();
+    private static final UnchangedEntityAdapter UNCHANGED_ENTITY_FORMAT_ADAPTER = new UnchangedEntityAdapter();
+    private static final ChangedEntityAdapter CHANGED_ENTITY_FORMAT_ADAPTER = new ChangedEntityAdapter();
 
     public <ENTITYTYPE> Stream<SourceEntry<ENTITYTYPE>> readEntities(final AbstractFile file,
                                                                      final Class<ENTITYTYPE> entitytype) throws IOException {
