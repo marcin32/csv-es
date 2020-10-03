@@ -36,14 +36,14 @@ public class PackageDescriptor {
         return sb.toString();
     }
 
-    public Path getBasePathWithArchiveName() {
+    public Path getBasePathWithPackageName() {
         return basePathToPackageLocation.resolve(getPackageName());
     }
 
     public AbstractFile getMetadataFile() {
         if (this.packageType.equals(PackageType.ARCHIVE)) {
-            return new PackedFile(METADATA_FILENAME, getBasePathWithArchiveName());
+            return new PackedFile(METADATA_FILENAME, getBasePathWithPackageName());
         }
-        return new RawFile(METADATA_FILENAME, getBasePathWithArchiveName());
+        return new RawFile(METADATA_FILENAME, getBasePathWithPackageName());
     }
 }

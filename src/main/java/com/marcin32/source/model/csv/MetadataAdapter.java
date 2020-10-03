@@ -12,7 +12,7 @@ public class MetadataAdapter implements ITableFormatAdapter<PackedTableMetadata>
             final long numberOfLines = Long.parseLong(csvLine[1]);
             return Optional.of(new PackedTableMetadata(className, numberOfLines));
         } catch (final Throwable th) {
-            System.err.println("Error parsing line: " + String.join(" ", csvLine));
+            System.err.println("Error parsing line from metadata file: " + String.join(" ", csvLine));
         }
         return Optional.empty();
     }

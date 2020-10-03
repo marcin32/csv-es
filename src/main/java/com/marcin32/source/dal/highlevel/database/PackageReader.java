@@ -1,13 +1,16 @@
 package com.marcin32.source.dal.highlevel.database;
 
 import com.marcin32.source.base.Constants;
+import com.marcin32.source.base.PackageType;
 import com.marcin32.source.dal.highlevel.table.TableReader;
+import com.marcin32.source.model.ITableMetadata;
 import com.marcin32.source.model.PackageDescriptor;
 import com.marcin32.source.model.PackedTableMetadata;
 import com.marcin32.source.model.SourceEntry;
 import com.marcin32.source.model.csv.MetadataAdapter;
 import com.marcin32.source.model.file.AbstractFile;
 import com.marcin32.source.model.file.PackedFile;
+import com.marcin32.source.model.file.RawFile;
 
 import java.io.IOException;
 import java.util.stream.Stream;
@@ -63,9 +66,11 @@ public class PackageReader implements IPackageDal {
                 .orElseThrow();
     }
 
-    private AbstractFile mapTableMetadataFile(final PackedTableMetadata tableMetadataFile) {
-        final PackedFile packedFile = new PackedFile(tableMetadataFile.getClassName(), packageDescriptor.getBasePathWithArchiveName());
-        return packedFile;
+    private AbstractFile mapTableMetadataFile(final ITableMetadata tableMetadataFile) {
+        if (this.packageDescriptor.getPackageType().equals(PackageType.ARCHIVE)) {
+            return new PackedFile(tableMetadataFile.getClassName(), packageDescriptor.getBasePathWithPackageName());
+        }
+        return new RawFile(tableMetadataFile.getClassName(), packageDescriptor.getBasePathWithPackageName());
     }
 
     //private final CsvReader csvReader = new CsvReader();

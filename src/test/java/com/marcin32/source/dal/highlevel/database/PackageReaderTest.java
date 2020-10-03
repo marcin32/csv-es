@@ -4,6 +4,7 @@ import com.marcin32.source.TestEntity1;
 import com.marcin32.source.base.Constants;
 import com.marcin32.source.base.PackageScope;
 import com.marcin32.source.base.PackageType;
+import com.marcin32.source.model.ITableMetadata;
 import com.marcin32.source.model.PackageDescriptor;
 import com.marcin32.source.model.PackedTableMetadata;
 import com.marcin32.source.model.SourceEntry;
@@ -64,7 +65,7 @@ public class PackageReaderTest {
             final Optional<PackedTableMetadata> any = tableMetadataStream.findAny();
             assertTrue(any.isPresent());
 
-            final PackedTableMetadata packedTableMetadata1 = any.get();
+            final ITableMetadata packedTableMetadata1 = any.get();
 
             assertEquals(packedTableMetadata1.getClassName(), TestEntity1.class.getSimpleName() + Constants.TABLE_EXTENSION);
             try (final Stream<SourceEntry<TestEntity1>> sourceEntryStream = packageReader.readEntities(TestEntity1.class)) {
