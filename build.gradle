@@ -36,7 +36,7 @@ dependencies {
     //implementation "io.reactivex.rxjava2:rxjava:${rxJavaVersion}"
 
     //testImplementation "junit:junit"
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+    testCompile group: 'junit', name: 'junit', version: '4.13'
     testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
     testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
 }
