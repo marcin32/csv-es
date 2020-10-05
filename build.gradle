@@ -27,7 +27,7 @@ dependencies {
 
     //compile 'com.google.guava:guava:28.0-jre'
     implementation "com.github.wxisme:bloomfilter:1.0.0"
-    implementation "org.apache.commons:commons-compress:1.18"
+    implementation "org.apache.commons:commons-compress:1.20"
     implementation "commons-io:commons-io:2.8.0"
     implementation "com.google.code.gson:gson:+"
     //implementation "org.projectlombok:lombok:${lombokVersion}"
