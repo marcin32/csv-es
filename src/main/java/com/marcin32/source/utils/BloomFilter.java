@@ -42,7 +42,7 @@ public class BloomFilter implements Cloneable {
 
     /**
      * Returns true if the element is in the container.
-     * Returns false with a probability ≈ 1-e^(-ln(2)² * m/n)
+     * Returns false with a probability ~ 1-e^(-ln(2)² * m/n)
      * if the element is not in the container.
      **/
     public boolean contains(Object o) {

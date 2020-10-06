@@ -29,7 +29,7 @@ public class TableReader extends AbstractTableReader {
     public <TARGET_TYPE> Stream<TARGET_TYPE> readEntities(final AbstractFile file,
                                                           final ITableFormatAdapter<TARGET_TYPE> tableFormatAdapter) throws IOException {
         return csvReader.readCsv(file)
-                .map(tableFormatAdapter::convertCsvLine)
+                .map(tableFormatAdapter::deserializeCsvLine)
                 .filter(Optional::isPresent)
                 .map(Optional::get);
     }

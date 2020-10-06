@@ -1,9 +1,8 @@
 package com.marcin32.source.dal.lowlevel.csv;
 
-import com.marcin32.source.base.Constants;
 import com.marcin32.source.dal.lowlevel.file.FileWriter;
+import com.marcin32.source.model.csv.ITableFormatAdapter;
 import com.marcin32.source.model.file.RawFile;
-import com.marcin32.source.utils.ShaUtil;
 
 public class CsvWriter {
 
@@ -13,24 +12,14 @@ public class CsvWriter {
     }
 
     public <ENTITYTYPE> void saveEntity(final RawFile rawFile,
-                                        final String uuid,
-                                        final String serializedEntity) {
+                                        final ITableFormatAdapter<ENTITYTYPE> formatAdapter,
+                                        final String... parts) {
 
-        final String line = prepareContent(uuid, serializedEntity);
+        final String line = formatAdapter.serializeContent(parts);
         fileWriter.appendFile(line, rawFile);
     }
 
-    private <ENTITYTYPE> String prepareContent(final String uuid,
-                                               final String serializedEntity) {
-        //final String content = gson.toJson(entity);
-
-        return uuid + Constants.CSV_SEPARATOR_FOR_WRITING +
-                System.currentTimeMillis() +
-                Constants.CSV_SEPARATOR_FOR_WRITING +
-                ShaUtil.shaHash(serializedEntity) +
-                Constants.CSV_SEPARATOR_FOR_WRITING +
-                serializedEntity;
+    public void closeCsvFile(final RawFile rawFile) {
+        fileWriter.closeFile(rawFile);
     }
-
-
 }

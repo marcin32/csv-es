@@ -30,7 +30,7 @@ public class RawFileTest {
     }
 
     @Test
-    public void shouldReturnProperPath() throws IOException, IllegalAccessException {
+    public void shouldReturnProperPath() throws IOException {
         final String fileName = "testFile.txt";
         final Path temporaryPath = folder.newFolder().toPath();
         final RawFile rawFile = new RawFile(fileName, temporaryPath);
@@ -38,5 +38,4 @@ public class RawFileTest {
         assertEquals(temporaryPath, rawFile.getDirectoryPath());
         assertEquals(temporaryPath.resolve(fileName), rawFile.getDirectoryPathWithFileName());
     }
-
 }
