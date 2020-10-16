@@ -3,9 +3,7 @@ package com.marcin32.source.dal.lowlevel.csv;
 import com.marcin32.source.model.file.PackedFile;
 import com.marcin32.source.model.file.RawFile;
 import com.marcin32.source.utils.FilesystemDal;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import java.io.File;
 import java.io.IOException;
@@ -14,9 +12,6 @@ import java.util.stream.Stream;
 import static org.junit.Assert.assertEquals;
 
 public class CsvReaderTest {
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void shouldReadTestFile() throws IOException {

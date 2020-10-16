@@ -3,7 +3,6 @@ package com.marcin32.source.dal.lowlevel.file;
 import com.marcin32.source.model.file.RawFile;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
@@ -19,10 +18,7 @@ import static org.junit.Assert.assertTrue;
 public class FileWriterTest {
 
     @Rule
-    public TemporaryFolder folder= new TemporaryFolder();
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
+    public TemporaryFolder folder = new TemporaryFolder();
 
     @Test
     public void shouldWriteALine() throws IOException {
@@ -39,7 +35,7 @@ public class FileWriterTest {
 
         final FileReader fileReader = new FileReader();
         final RawFile rawFileToRead = new RawFile(fileName, temporaryFolder.toPath());
-        try(final Stream<String> stringStream = fileReader.readFile(rawFileToRead)) {
+        try (final Stream<String> stringStream = fileReader.readFile(rawFileToRead)) {
 
             final List<String> stringList = stringStream.collect(Collectors.toList());
             final Optional<String> first = stringList.stream().findFirst();

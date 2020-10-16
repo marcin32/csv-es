@@ -3,7 +3,6 @@ package com.marcin32.source.dal.highlevel.database;
 import com.marcin32.source.writing.WritingDescriptorsDal;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.IOException;
@@ -13,9 +12,6 @@ public class PackageWriterTest {
     private final WritingDescriptorsDal writingDescriptorsDal = new WritingDescriptorsDal();
 
     private static final String TABLE_NAME = "testEntity";
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();

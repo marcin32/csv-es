@@ -3,9 +3,7 @@ package com.marcin32.source.dal.lowlevel.file;
 import com.marcin32.source.model.file.PackedFile;
 import com.marcin32.source.model.file.RawFile;
 import com.marcin32.source.utils.FilesystemDal;
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import java.io.File;
 import java.util.stream.Stream;
@@ -13,9 +11,6 @@ import java.util.stream.Stream;
 import static org.junit.Assert.assertEquals;
 
 public class FileReaderTest {
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void shouldReadRawFileLineAfterLine() {

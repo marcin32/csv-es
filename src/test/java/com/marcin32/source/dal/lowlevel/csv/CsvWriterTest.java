@@ -6,7 +6,6 @@ import com.marcin32.source.model.csv.UnchangedEntityAdapter;
 import com.marcin32.source.model.file.RawFile;
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
@@ -24,10 +23,7 @@ public class CsvWriterTest {
     private final static ITableFormatAdapter<String> adapter = new UnchangedEntityAdapter();
 
     @Rule
-    public ExpectedException expectedException = ExpectedException.none();
-
-    @Rule
-    public TemporaryFolder folder= new TemporaryFolder();
+    public TemporaryFolder folder = new TemporaryFolder();
 
     @Test
     public void shouldWriteACsvFile() throws IOException {
@@ -44,7 +40,7 @@ public class CsvWriterTest {
 
         final FileReader fileReader = new FileReader();
         final RawFile rawFileToRead = new RawFile(fileName, temporaryFolder.toPath());
-        try(final Stream<String> stringStream = fileReader.readFile(rawFileToRead)) {
+        try (final Stream<String> stringStream = fileReader.readFile(rawFileToRead)) {
 
             final List<String> stringList = stringStream.collect(Collectors.toList());
             final Optional<String> first = stringList.stream().findFirst();
