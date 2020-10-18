@@ -34,10 +34,10 @@ public class CsvReaderTest {
     @Test
     public void shouldReadPackedFileLineAfterLine() throws IOException {
         final String fileName = "TestEntity1.csv";
-        String archiveName = "updates1/2345-DELTA_PACKAGE.tar.gz";
+        final String archiveName = "updates1/2345-DELTA_PACKAGE.tar.gz";
         final CsvReader csvReader = new CsvReader();
         final File file = FilesystemDal.getFileFromResources(archiveName);
-        final PackedFile packedFile = new PackedFile(fileName, file.toPath());
+        final PackedFile packedFile = new PackedFile(fileName, 1, file.toPath());
 
         long lineCount = 0;
         try (final Stream<String[]> stringStream = csvReader.readCsv(packedFile)) {

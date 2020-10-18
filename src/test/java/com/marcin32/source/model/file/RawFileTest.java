@@ -2,7 +2,6 @@ package com.marcin32.source.model.file;
 
 import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
@@ -15,9 +14,6 @@ public class RawFileTest {
 
     @Rule
     public TemporaryFolder folder = new TemporaryFolder();
-
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Test(expected = IllegalAccessException.class)
     public void shouldThrowExceptionWhenFileNotClosed() throws IOException, IllegalAccessException {

@@ -16,9 +16,12 @@ public class PackedFile extends AbstractFile {
 
     private final Path archivePath;
 
-    public PackedFile(final String fileName, final Path archivePath) {
+    private final long numberOfLines;
+
+    public PackedFile(final String fileName, final long numberOfLines, final Path archivePath) {
         super(fileName);
         this.archivePath = archivePath;
+        this.numberOfLines = numberOfLines;
     }
 
     @Override
@@ -33,6 +36,6 @@ public class PackedFile extends AbstractFile {
 
     @Override
     public long getNumberOfLines() {
-        throw new UnsupportedOperationException("Not yet implemented");
+        return this.numberOfLines;
     }
 }

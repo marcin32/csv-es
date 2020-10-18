@@ -1,16 +1,12 @@
 package com.marcin32.source.reading;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
 public class ReadingUpdateDescriptorTest {
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void shouldReadFromFile() throws IOException, URISyntaxException {

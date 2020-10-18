@@ -1,16 +1,12 @@
 package com.marcin32.source.utils;
 
-import org.junit.Rule;
 import org.junit.Test;
-import org.junit.rules.ExpectedException;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
 
 public class UpdateManagerTest {
 
-    @Rule
-    public ExpectedException expectedException = ExpectedException.none();
 
     @Test
     public void shouldReadLatestEntity() throws URISyntaxException, IOException {

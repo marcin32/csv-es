@@ -6,6 +6,7 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardOpenOption;
+import java.util.Objects;
 import java.util.concurrent.atomic.LongAdder;
 import java.util.stream.Stream;
 
@@ -13,6 +14,8 @@ public class RawFile extends AbstractFile {
 
     private final Path directoryPath;
     private final LongAdder totalNumberOfLines = new LongAdder();
+
+    private final Long numberOfEntries;
     private boolean closed = false;
     private boolean dirty = false;
     private BufferedWriter writer;
@@ -21,6 +24,13 @@ public class RawFile extends AbstractFile {
     public RawFile(final String fileName, final Path directoryPath) {
         super(fileName);
         this.directoryPath = directoryPath;
+        this.numberOfEntries = null;
+    }
+
+    public RawFile(final String fileName, final long numberOfEntries, final Path directoryPath) {
+        super(fileName);
+        this.directoryPath = directoryPath;
+        this.numberOfEntries = numberOfEntries;
     }
 
     BufferedWriter getWriter() throws IOException, IllegalAccessException {
@@ -48,7 +58,7 @@ public class RawFile extends AbstractFile {
 
     @Override
     public long getNumberOfLines() {
-        return totalNumberOfLines.sum();
+        return Objects.requireNonNullElseGet(this.numberOfEntries, totalNumberOfLines::sum);
     }
 
     public void appendLine(final String line) throws IOException, IllegalAccessException {

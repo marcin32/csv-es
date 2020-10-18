@@ -68,9 +68,13 @@ public class PackageReader implements IPackageDal {
 
     private AbstractFile mapTableMetadataFile(final ITableMetadata tableMetadataFile) {
         if (this.packageDescriptor.getPackageType().equals(PackageType.ARCHIVE)) {
-            return new PackedFile(tableMetadataFile.getClassName(), packageDescriptor.getBasePathWithPackageName());
+            return new PackedFile(tableMetadataFile.getClassName(),
+                    tableMetadataFile.getNumberOfEntities(),
+                    packageDescriptor.getBasePathWithPackageName());
         }
-        return new RawFile(tableMetadataFile.getClassName(), packageDescriptor.getBasePathWithPackageName());
+        return new RawFile(tableMetadataFile.getClassName(),
+                tableMetadataFile.getNumberOfEntities(),
+                packageDescriptor.getBasePathWithPackageName());
     }
 
     //private final CsvReader csvReader = new CsvReader();

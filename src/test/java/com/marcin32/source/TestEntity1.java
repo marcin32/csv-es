@@ -9,5 +9,7 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class TestEntity1 {
 
+    private String uuid;
+
     private String content;
 }

@@ -33,7 +33,7 @@ public class FileReaderTest {
         String archiveName = "updates1/2345-DELTA_PACKAGE.tar.gz";
         final FileReader fileReader = new FileReader();
         final File file = FilesystemDal.getFileFromResources(archiveName);
-        final PackedFile packedFile = new PackedFile(fileName, file.toPath());
+        final PackedFile packedFile = new PackedFile(fileName, 6, file.toPath());
 
         long lineCount = 0;
         try (final Stream<String> stringStream = fileReader.readFile(packedFile)) {

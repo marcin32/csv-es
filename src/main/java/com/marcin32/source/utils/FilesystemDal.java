@@ -74,6 +74,20 @@ public class FilesystemDal {
         return Optional.empty();
     }
 
+    public static int countTarEntries(final File tarFile) throws IOException {
+        int numberOfFiles = 0;
+        final GzipCompressorInputStream gzipCompressorInputStream =
+                new GzipCompressorInputStream(new FileInputStream(tarFile));
+        TarArchiveInputStream tarInput = new TarArchiveInputStream(gzipCompressorInputStream);
+        TarArchiveEntry currentTarEntry = tarInput.getNextTarEntry();
+        while (currentTarEntry != null) {
+            ++numberOfFiles;
+            currentTarEntry = tarInput.getNextTarEntry();
+        }
+
+        return numberOfFiles;
+    }
+
     public Optional<File> getFileFromResources(final PackageDescriptor packageDescriptor,
                                                final String databaseName) throws IOException {
         if (packageDescriptor.getPackageType().equals(PackageType.DIRECTORY)) {

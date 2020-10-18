@@ -16,8 +16,7 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class PackageReaderTest {
 
@@ -29,6 +28,8 @@ public class PackageReaderTest {
         try (final Stream<PackedTableMetadata> tableMetadata = packageReader.listTables()) {
             final Optional<PackedTableMetadata> any = tableMetadata.findAny();
             assertTrue(any.isPresent());
+        } catch (final Throwable th) {
+            fail();
         }
     }
 

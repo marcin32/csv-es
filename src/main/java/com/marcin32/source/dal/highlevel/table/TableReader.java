@@ -3,9 +3,7 @@ package com.marcin32.source.dal.highlevel.table;
 import com.marcin32.source.dal.lowlevel.csv.CsvReader;
 import com.marcin32.source.model.CsvEntry;
 import com.marcin32.source.model.SourceEntry;
-import com.marcin32.source.model.csv.ChangedEntityAdapter;
 import com.marcin32.source.model.csv.ITableFormatAdapter;
-import com.marcin32.source.model.csv.UnchangedEntityAdapter;
 import com.marcin32.source.model.file.AbstractFile;
 
 import java.io.IOException;
@@ -15,8 +13,6 @@ import java.util.stream.Stream;
 public class TableReader extends AbstractTableReader {
 
     private final static CsvReader csvReader = new CsvReader();
-    private static final UnchangedEntityAdapter UNCHANGED_ENTITY_FORMAT_ADAPTER = new UnchangedEntityAdapter();
-    private static final ChangedEntityAdapter CHANGED_ENTITY_FORMAT_ADAPTER = new ChangedEntityAdapter();
 
     public <ENTITYTYPE> Stream<SourceEntry<ENTITYTYPE>> readEntities(final AbstractFile file,
                                                                      final Class<ENTITYTYPE> entitytype) throws IOException {
