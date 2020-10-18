@@ -20,7 +20,7 @@ public class CachedTableReaderTest {
         final File archive = FilesystemDal.getFileFromResources(archiveName);
         final PackedFile packedFile = new PackedFile(fileName, 1, archive.toPath());
         final CachedTableReader cachedTableReader = new CachedTableReader();
-        final TestEntity1 testEntity1 = new TestEntity1(null, "testContent1");
+        final TestEntity1 testEntity1 = new TestEntity1("entityId1", "testContent1");
 
         boolean result = cachedTableReader.checkWhetherTableContainsEntity(testEntity1, packedFile);
         assertTrue(result);

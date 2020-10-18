@@ -31,7 +31,7 @@ public class FileWriterTest {
 
         fileWriter.appendFile(content, rawFile);
         fileWriter.closeFile(rawFile);
-        assertEquals(1, rawFile.getNumberOfLines());
+        assertEquals(1, rawFile.getNumberOfEntries());
 
         final FileReader fileReader = new FileReader();
         final RawFile rawFileToRead = new RawFile(fileName, temporaryFolder.toPath());

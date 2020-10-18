@@ -57,7 +57,7 @@ public class RawFile extends AbstractFile {
     }
 
     @Override
-    public long getNumberOfLines() {
+    public long getNumberOfEntries() {
         return Objects.requireNonNullElseGet(this.numberOfEntries, totalNumberOfLines::sum);
     }
 

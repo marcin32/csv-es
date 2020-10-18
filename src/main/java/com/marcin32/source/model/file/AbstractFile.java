@@ -14,5 +14,5 @@ public abstract class AbstractFile {
 
     public abstract Stream<String> readFile() throws IllegalAccessException, IOException;
 
-    public abstract long getNumberOfLines();
+    public abstract long getNumberOfEntries();
 }

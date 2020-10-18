@@ -33,7 +33,7 @@ public class TableWriterTest {
 
         tableWriter.writeEntity(rawFile, uuid, testEntity1);
         tableWriter.closeTable(rawFile);
-        assertEquals(1, rawFile.getNumberOfLines());
+        assertEquals(1, rawFile.getNumberOfEntries());
 
         try (final Stream<SourceEntry<TestEntity1>> stringStream = tableWriter.readEntities(rawFile, TestEntity1.class)) {
 
@@ -56,7 +56,7 @@ public class TableWriterTest {
 
         tableWriter.writeTimestampForEntity(rawFile, uuid);
         tableWriter.closeTable(rawFile);
-        assertEquals(1, rawFile.getNumberOfLines());
+        assertEquals(1, rawFile.getNumberOfEntries());
 
         try (final Stream<String> stringStream = tableWriter.readUuidsOfTimestampedEntities(rawFile)) {
 

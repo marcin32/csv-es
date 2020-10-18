@@ -35,7 +35,7 @@ public class PackedFile extends AbstractFile {
     }
 
     @Override
-    public long getNumberOfLines() {
+    public long getNumberOfEntries() {
         return this.numberOfLines;
     }
 }

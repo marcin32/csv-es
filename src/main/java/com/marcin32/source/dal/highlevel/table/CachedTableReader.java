@@ -44,14 +44,14 @@ public class CachedTableReader extends AbstractTableReader {
             }
         }
 
-        if (!bloomCache.shouldCheck(file, entityContentHash))
-            return true;
-
-        try {
-            return readEntities(file, entity)
-                    .anyMatch(abstractCsvEntity -> abstractCsvEntity.getShaContentHash().equals(entityContentHash));
-        } catch (IOException e) {
-            e.printStackTrace();
+        System.out.println("Checking for hash: " + entityContentHash);
+        if (bloomCache.mightContain(file, entityContentHash)) {
+            try {
+                return readEntities(file, entity)
+                        .anyMatch(abstractCsvEntity -> abstractCsvEntity.getShaContentHash().equals(entityContentHash));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
         return false;
     }
