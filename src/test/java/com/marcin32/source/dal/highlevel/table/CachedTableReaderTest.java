@@ -24,7 +24,6 @@ public class CachedTableReaderTest {
 
         boolean result = cachedTableReader.checkWhetherTableContainsEntity(testEntity1, packedFile);
         assertTrue(result);
-
     }
 
     @Test

@@ -6,7 +6,6 @@ import com.marcin32.source.model.SourceEntry;
 import com.marcin32.source.model.csv.ITableFormatAdapter;
 import com.marcin32.source.model.file.AbstractFile;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -14,16 +13,18 @@ public class TableReader extends AbstractTableReader {
 
     private final static CsvReader csvReader = new CsvReader();
 
+    @Override
     public <ENTITYTYPE> Stream<SourceEntry<ENTITYTYPE>> readEntities(final AbstractFile file,
-                                                                     final Class<ENTITYTYPE> entitytype) throws IOException {
+                                                                     final Class<ENTITYTYPE> entitytype) {
         return readEntities(file, CHANGED_ENTITY_FORMAT_ADAPTER)
                 .map(entity -> deserializeEntity(entity, entitytype))
                 .filter(Optional::isPresent)
                 .map(Optional::get);
     }
 
+    @Override
     public <TARGET_TYPE> Stream<TARGET_TYPE> readEntities(final AbstractFile file,
-                                                          final ITableFormatAdapter<TARGET_TYPE> tableFormatAdapter) throws IOException {
+                                                          final ITableFormatAdapter<TARGET_TYPE> tableFormatAdapter) {
         return csvReader.readCsv(file)
                 .map(tableFormatAdapter::deserializeCsvLine)
                 .filter(Optional::isPresent)
@@ -32,25 +33,16 @@ public class TableReader extends AbstractTableReader {
 
     public Stream<String> readUuidsOfTimestampedEntities(final AbstractFile file) {
 
-        try {
-            return readEntities(file, UNCHANGED_ENTITY_FORMAT_ADAPTER);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return Stream.empty();
+        return readEntities(file, UNCHANGED_ENTITY_FORMAT_ADAPTER);
     }
 
     @Override
     public <ENTITYTYPE> boolean checkWhetherTableContainsEntity(final String entityContentHash,
                                                                 final Class<ENTITYTYPE> entity,
                                                                 final AbstractFile file) {
-        try {
-            return readEntities(file, entity)
-                    .anyMatch(entry -> entry.getShaContentHash().equals(entityContentHash));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return false;
+
+        return readEntities(file, entity)
+                .anyMatch(entry -> entry.getShaContentHash().equals(entityContentHash));
     }
 
     static <ENTITYTYPE> Optional<SourceEntry<ENTITYTYPE>> deserializeEntity(final CsvEntry abstractEntity,

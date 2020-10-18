@@ -2,7 +2,7 @@ package com.marcin32.source.dal.highlevel.database;
 
 import com.marcin32.source.base.Constants;
 import com.marcin32.source.base.PackageType;
-import com.marcin32.source.dal.highlevel.table.TableReader;
+import com.marcin32.source.dal.highlevel.table.CachedTableReader;
 import com.marcin32.source.model.ITableMetadata;
 import com.marcin32.source.model.PackageDescriptor;
 import com.marcin32.source.model.PackedTableMetadata;
@@ -12,62 +12,60 @@ import com.marcin32.source.model.file.AbstractFile;
 import com.marcin32.source.model.file.PackedFile;
 import com.marcin32.source.model.file.RawFile;
 
-import java.io.IOException;
 import java.util.stream.Stream;
 
 public class PackageReader implements IPackageDal {
 
-    private final PackageDescriptor packageDescriptor;
+    private final CachedTableReader tableReader = new CachedTableReader();
 
-    private final TableReader tableReader = new TableReader();
     public static final MetadataAdapter METADATA_FORMAT_ADAPTER = new MetadataAdapter();
 
-    public PackageReader(final PackageDescriptor packageDescriptor) {
-        this.packageDescriptor = packageDescriptor;
-    }
-
     @Override
-    public <ENTITYTYPE> Stream<SourceEntry<ENTITYTYPE>> readEntities(final Class<ENTITYTYPE> entityType) throws IOException {
-        final AbstractFile tableFile = getTableFile(entityType);
+    public <ENTITYTYPE> Stream<SourceEntry<ENTITYTYPE>> readEntities(final Class<ENTITYTYPE> entityType,
+                                                                     final PackageDescriptor packageDescriptor) {
+        final AbstractFile tableFile = getTableFile(entityType, packageDescriptor);
         return tableReader.readEntities(tableFile, entityType);
     }
 
     @Override
-    public <ENTITYTYPE> Stream<String> readUuidsOfTimestampedEntities(final Class<ENTITYTYPE> entityType) {
-        return null;
+    public <ENTITYTYPE> Stream<String> readUuidsOfTimestampedEntities(final Class<ENTITYTYPE> entityType,
+                                                                      final PackageDescriptor packageDescriptor) {
+        final AbstractFile tableFile = getTableFile(entityType, packageDescriptor);
+        return tableReader.readUuidsOfTimestampedEntities(tableFile);
     }
 
     @Override
-    public <ENTITYTYPE> boolean checkWhetherPackageContainsEntity(final ENTITYTYPE entity) {
-        return false;
+    public <ENTITYTYPE> boolean checkWhetherPackageContainsEntity(final ENTITYTYPE entity,
+                                                                  final PackageDescriptor packageDescriptor) {
+        final Class<?> entityClass = entity.getClass();
+        final AbstractFile tableFile = getTableFile(entityClass, packageDescriptor);
+        return tableReader
+                .checkWhetherTableContainsEntity(entity, tableFile);
     }
 
     @Override
-    public <ENTITYTYPE> boolean numberOfEntities(final Class<ENTITYTYPE> entity) {
-        return false;
+    public <ENTITYTYPE> long numberOfEntities(final Class<ENTITYTYPE> entity,
+                                              final PackageDescriptor packageDescriptor) {
+        return getTableFile(entity, packageDescriptor).getNumberOfEntries();
     }
 
     @Override
-    public Stream<PackedTableMetadata> listTables() {
-        try {
-            final AbstractFile metadataFile = packageDescriptor.getMetadataFile();
-            return tableReader.readEntities(metadataFile, METADATA_FORMAT_ADAPTER);
-        } catch (final IOException e) {
-            e.printStackTrace();
-        }
-        return Stream.empty();
+    public Stream<PackedTableMetadata> getPackageMetadata(final PackageDescriptor packageDescriptor) {
+        final AbstractFile metadataFile = packageDescriptor.getMetadataFile();
+        return tableReader.readEntities(metadataFile, METADATA_FORMAT_ADAPTER);
     }
 
-    public <ENTITYTYPE> AbstractFile getTableFile(final Class<ENTITYTYPE> entityType) {
-        return listTables()
-                .filter(tableMetadata -> tableMetadata.getClassName().equals(entityType.getSimpleName()+ Constants.TABLE_EXTENSION))
+    <ENTITYTYPE> AbstractFile getTableFile(final Class<ENTITYTYPE> entityType, final PackageDescriptor packageDescriptor) {
+        return getPackageMetadata(packageDescriptor)
+                .filter(tableMetadata -> tableMetadata.getClassName().equals(entityType.getSimpleName() + Constants.TABLE_EXTENSION))
                 .findFirst()
-                .map(this::mapTableMetadataFile)
+                .map(tableMetadata -> mapTableMetadataFile(tableMetadata, packageDescriptor))
                 .orElseThrow();
     }
 
-    private AbstractFile mapTableMetadataFile(final ITableMetadata tableMetadataFile) {
-        if (this.packageDescriptor.getPackageType().equals(PackageType.ARCHIVE)) {
+    private AbstractFile mapTableMetadataFile(final ITableMetadata tableMetadataFile,
+                                              final PackageDescriptor packageDescriptor) {
+        if (packageDescriptor.getPackageType().equals(PackageType.ARCHIVE)) {
             return new PackedFile(tableMetadataFile.getClassName(),
                     tableMetadataFile.getNumberOfEntities(),
                     packageDescriptor.getBasePathWithPackageName());
@@ -76,59 +74,4 @@ public class PackageReader implements IPackageDal {
                 tableMetadataFile.getNumberOfEntities(),
                 packageDescriptor.getBasePathWithPackageName());
     }
-
-    //private final CsvReader csvReader = new CsvReader();
-
-    //private final BloomCache bloomCache = new BloomCache();
-
-    //private final FilesystemDal filesystemDal = new FilesystemDal();
-
- /*   public Stream<AbstractCsvEntity> readEntities(final String tableName) throws IOException {
-        final String fileName = tableName.contains(TABLE_EXTENSION) ? tableName : tableName + TABLE_EXTENSION;
-        if (getUpdateType().equals(UpdateType.DIRECTORY)) {
-            final Optional<File> databaseFile = filesystemDal.getFile(this, fileName);
-            if (databaseFile.isPresent()) {
-                return csvReader.readCsv(databaseFile.get());
-            }
-        }
-        return Stream.empty();
-    }*/
-
-    /*public <ENTITYTYPE> Stream<ENTITYTYPE> readEntities(final String tableName,
-                                                        final Class<ENTITYTYPE> entityClass) throws IOException {
-        return readEntitiesWithMetadata(tableName, entityClass)
-                .map(AbstractSourceEntity::getEntity);
-    }*/
-
-  /*  public <ENTITYTYPE> Stream<AbstractSourceEntity<ENTITYTYPE>> readEntitiesWithMetadata(final String tableName,
-                                                                                          final Class<ENTITYTYPE> entityClass) throws IOException {
-        return readEntities(tableName)
-                .map(abstractEntity -> TableReader.convertEntity(abstractEntity, entityClass))
-                .filter(Optional::isPresent)
-                .map(Optional::get);
-    }*/
-
-   /* public <ENTITYTYPE> boolean isEntityAlreadyPersisted(final String tableName,
-                                                  final ENTITYTYPE entity) throws IOException {
-
-        final String content = gson.toJson(entity);
-
-        if (!bloomCache.hasDatabasePopulated(tableName)) {
-            synchronized (this) {
-                if (!bloomCache.hasDatabasePopulated(tableName)) {
-                    System.out.println("Populating cache for table: " + tableName);
-                    readEntities(tableName)
-                            .peek(element -> System.out.println(element.getShaContentHash()))
-                            .forEach(element -> bloomCache.populateCache(tableName, element.getShaContentHash()));
-                }
-            }
-        }
-
-        final String contentHash = ShaUtil.shaHash(content);
-        if (!bloomCache.shouldCheck(tableName, contentHash))
-            return true;
-
-        return readEntities(tableName)
-                .anyMatch(abstractCsvEntity -> abstractCsvEntity.getShaContentHash().equals(contentHash));
-    }*/
 }

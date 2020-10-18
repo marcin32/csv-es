@@ -1,10 +1,10 @@
 package com.marcin32.source.dal.highlevel.table;
 
 import com.marcin32.source.model.SourceEntry;
+import com.marcin32.source.model.csv.ITableFormatAdapter;
 import com.marcin32.source.model.file.AbstractFile;
 import com.marcin32.source.utils.BloomCache;
 
-import java.io.IOException;
 import java.util.stream.Stream;
 
 public class CachedTableReader extends AbstractTableReader {
@@ -15,8 +15,14 @@ public class CachedTableReader extends AbstractTableReader {
 
     @Override
     public <ENTITYTYPE> Stream<SourceEntry<ENTITYTYPE>> readEntities(final AbstractFile file,
-                                                                     final Class<ENTITYTYPE> entitytype) throws IOException {
+                                                                     final Class<ENTITYTYPE> entitytype) {
         return tableReader.readEntities(file, entitytype);
+    }
+
+    @Override
+    public <TARGET_TYPE> Stream<TARGET_TYPE> readEntities(final AbstractFile file,
+                                                          final ITableFormatAdapter<TARGET_TYPE> tableFormatAdapter) {
+        return tableReader.readEntities(file, tableFormatAdapter);
     }
 
     @Override
@@ -32,26 +38,15 @@ public class CachedTableReader extends AbstractTableReader {
         if (!bloomCache.hasDatabasePopulated(file)) {
             synchronized (this) {
                 if (!bloomCache.hasDatabasePopulated(file)) {
-                    System.out.println("Populating cache for file: " + file.getFileName());
-                    try {
-                        readEntities(file, entity)
-                                .peek(element -> System.out.println(element.getShaContentHash()))
-                                .forEach(element -> bloomCache.populateCache(file, element.getShaContentHash()));
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+                    readEntities(file, entity)
+                            .forEach(element -> bloomCache.populateCache(file, element.getShaContentHash()));
+
                 }
             }
         }
-
-        System.out.println("Checking for hash: " + entityContentHash);
         if (bloomCache.mightContain(file, entityContentHash)) {
-            try {
-                return readEntities(file, entity)
-                        .anyMatch(abstractCsvEntity -> abstractCsvEntity.getShaContentHash().equals(entityContentHash));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            return readEntities(file, entity)
+                    .anyMatch(abstractCsvEntity -> abstractCsvEntity.getShaContentHash().equals(entityContentHash));
         }
         return false;
     }
