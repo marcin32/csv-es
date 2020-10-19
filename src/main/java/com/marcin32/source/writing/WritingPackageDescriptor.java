@@ -34,22 +34,6 @@ public class WritingPackageDescriptor  {
         fileWriter.appendFile(uuid, TIMESTAMPS_PREFIX + fileName, this, fileDescriptors);
     }*/
 
-//    void archiveCurrentUpdate() {
-//
-//        final String updateDirectory = this.getPath().getFileName().toString();
-//        final File[] files = FilesystemDal.listFiles(this.getPath());
-//
-//
-//        final String updateArchiveName = updateDirectory + Constants.ARCHIVE_EXTENSION;
-//        final Path pathToOutputArchive = getPath().getParent().resolve(updateArchiveName);
-//
-//        try {
-//            FilesystemDal.compress(pathToOutputArchive.toString(), files);
-//            FilesystemDal.deleteFolder(getPath().toFile());
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
 //    Set<String> getAllStoredFileNames() {
 //        return fileDescriptors.getFileNames();

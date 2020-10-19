@@ -169,6 +169,23 @@ public class FilesystemDal {
         basePath.resolve(directoryName).toFile().mkdirs();
     }
 
+    public static void archivePackage(final PackageDescriptor packageDescriptor) {
+
+        final Path updateDirectory = packageDescriptor.getBasePathWithPackageName();
+        final File[] files = FilesystemDal.listFiles(updateDirectory);
+
+        final PackageDescriptor newPackage = new PackageDescriptor(packageDescriptor.getTimestamp(),
+                packageDescriptor.getPackageScope(), PackageType.ARCHIVE, packageDescriptor.getBasePathToPackageLocation());
+        final Path pathToOutputArchive = newPackage.getBasePathWithPackageName();
+
+        try {
+            FilesystemDal.compress(pathToOutputArchive.toString(), files);
+            FilesystemDal.deleteFolder(packageDescriptor.getBasePathWithPackageName().toFile());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     public static void deleteFolder(final File folder) {
         final File[] files = folder.listFiles();
         if (files != null) { //some JVMs return null for empty dirs

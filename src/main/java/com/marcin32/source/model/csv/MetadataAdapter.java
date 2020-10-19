@@ -25,6 +25,6 @@ public class MetadataAdapter extends AbstractFormatAdapter<PackedTableMetadata> 
 
     @Override
     int getDesiredPartsLength() {
-        return 1;
+        return 2;
     }
 }

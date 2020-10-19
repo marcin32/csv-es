@@ -14,7 +14,7 @@ import com.marcin32.source.model.file.RawFile;
 
 import java.util.stream.Stream;
 
-public class PackageReader implements IPackageDal {
+class PackageReader implements IPackageDal {
 
     private final CachedTableReader tableReader = new CachedTableReader();
 

@@ -9,7 +9,7 @@ public abstract class AbstractFormatAdapter<TARGET_TYPE> implements ITableFormat
     @Override
     public String serializeContent(final String... parts) {
         if (getDesiredPartsLength() != parts.length) {
-            throw new IllegalArgumentException(String.format("Wrong number of arguments for parts serializer! Expected: {}, actual: {} ", getDesiredPartsLength(), parts.length));
+            throw new IllegalArgumentException(String.format("Wrong number of arguments for parts serializer! Expected: %d, actual: %d ", getDesiredPartsLength(), parts.length));
         }
         return serializeContentInternal(parts);
     }

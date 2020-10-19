@@ -51,8 +51,6 @@ public class RawFile extends AbstractFile {
     }
 
     public Path getDirectoryPathWithFileName() {
-        //final String fileName = FilesystemDal.sanitizeFileName(getFileName());
-        //final String fileName = FilesystemDal.sanitizeFileName(getFileName());
         return directoryPath.resolve(getFileName());
     }
 

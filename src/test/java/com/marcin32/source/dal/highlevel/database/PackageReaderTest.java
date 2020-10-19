@@ -11,7 +11,6 @@ import com.marcin32.source.model.SourceEntry;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -27,21 +26,21 @@ public class PackageReaderTest {
         final PackageReader packageReader = new PackageReader();
 
         try (final Stream<PackedTableMetadata> tableMetadata = packageReader.getPackageMetadata(package2345)) {
-            final Optional<PackedTableMetadata> any = tableMetadata.findAny();
-            assertTrue(any.isPresent());
+            final Optional<PackedTableMetadata> metadata = tableMetadata.findAny();
+            assertTrue(metadata.isPresent());
         }
     }
 
     @Test
-    public void shouldReadEntitiesBasedOnMetadata() throws IOException {
+    public void shouldReadEntitiesBasedOnMetadata() {
         final PackageDescriptor package2345 = get2345Package();
         final PackageReader packageReader = new PackageReader();
 
         try (final Stream<PackedTableMetadata> tableMetadataStream = packageReader.getPackageMetadata(package2345)) {
-            final Optional<PackedTableMetadata> any = tableMetadataStream.findAny();
-            assertTrue(any.isPresent());
+            final Optional<PackedTableMetadata> metadata = tableMetadataStream.findAny();
+            assertTrue(metadata.isPresent());
 
-            final PackedTableMetadata packedTableMetadata1 = any.get();
+            final PackedTableMetadata packedTableMetadata1 = metadata.get();
 
             assertEquals(packedTableMetadata1.getClassName(), TestEntity1.class.getSimpleName() + Constants.TABLE_EXTENSION);
             try (final Stream<SourceEntry<TestEntity1>> sourceEntryStream = packageReader.readEntities(TestEntity1.class, package2345)) {
@@ -52,15 +51,15 @@ public class PackageReaderTest {
     }
 
     @Test
-    public void shouldReadEntitiesBasedOnMetadataFromDirectory() throws IOException {
+    public void shouldReadEntitiesBasedOnMetadataFromDirectory() {
         final PackageDescriptor package1234 = get1234Package();
         final PackageReader packageReader = new PackageReader();
 
         try (final Stream<PackedTableMetadata> tableMetadataStream = packageReader.getPackageMetadata(package1234)) {
-            final Optional<PackedTableMetadata> any = tableMetadataStream.findAny();
-            assertTrue(any.isPresent());
+            final Optional<PackedTableMetadata> metadata = tableMetadataStream.findAny();
+            assertTrue(metadata.isPresent());
 
-            final ITableMetadata packedTableMetadata1 = any.get();
+            final ITableMetadata packedTableMetadata1 = metadata.get();
 
             assertEquals(packedTableMetadata1.getClassName(), TestEntity1.class.getSimpleName() + Constants.TABLE_EXTENSION);
             try (final Stream<SourceEntry<TestEntity1>> sourceEntryStream = packageReader.readEntities(TestEntity1.class, package1234)) {
