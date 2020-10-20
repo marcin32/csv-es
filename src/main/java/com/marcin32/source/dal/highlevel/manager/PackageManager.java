@@ -1,4 +1,4 @@
-package com.marcin32.source.dal.manager;
+package com.marcin32.source.dal.highlevel.manager;
 
 import com.marcin32.source.dal.highlevel.database.PackageWriterWrapper;
 import com.marcin32.source.model.PackageDescriptor;

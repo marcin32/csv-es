@@ -61,7 +61,7 @@ public class PackageWriterTest {
     }
 
     @Test
-    public void shouldWriteEntitysTimestampsAndArchive() throws IOException {
+    public void shouldWriteEntityTimestampsAndArchive() throws IOException {
         final File tempDir = temporaryFolder.newFolder();
         final PackageWriter packageWriter = new PackageWriter();
         final long timestamp = System.currentTimeMillis();

@@ -1,16 +1,18 @@
 package com.marcin32.source.dal.highlevel.database;
 
 import com.marcin32.source.model.PackageDescriptorForWriting;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 public class PackageWriterWrapper implements AutoCloseable {
 
-    private final PackageWriter packageWriter;
+    private final PackageWriter packageWriter = new PackageWriter();
 
     private final PackageDescriptorForWriting packageDescriptorForWriting;
 
-    public <ENTITYTYPE> void writeEntity(final String entityId,
+    public PackageWriterWrapper(final PackageDescriptorForWriting packageDescriptorForWriting) {
+        this.packageDescriptorForWriting = packageDescriptorForWriting;
+    }
+
+    public <ENTITYTYPE> void storeEntity(final String entityId,
                                          final ENTITYTYPE entity) {
         packageWriter
                 .storeEntity(entityId, entity, packageDescriptorForWriting);
