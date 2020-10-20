@@ -4,7 +4,7 @@ public final class Constants {
 
     public static final String BACKUP_DIRECTORY_NAME = "backup";
 
-    public static final String TIMESTAMPS_PREFIX = "timestamps-";
+    public static final String TIMESTAMPS_SUFFIX = "-timestamps";
 
     public static final String TABLE_EXTENSION = ".csv";
 

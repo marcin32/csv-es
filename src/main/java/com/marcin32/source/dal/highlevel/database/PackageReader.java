@@ -23,14 +23,14 @@ class PackageReader implements IPackageDal {
     @Override
     public <ENTITYTYPE> Stream<SourceEntry<ENTITYTYPE>> readEntities(final Class<ENTITYTYPE> entityType,
                                                                      final PackageDescriptor packageDescriptor) {
-        final AbstractFile tableFile = getTableFile(entityType, packageDescriptor);
+        final AbstractFile tableFile = getTableEntityFile(entityType, packageDescriptor);
         return tableReader.readEntities(tableFile, entityType);
     }
 
     @Override
     public <ENTITYTYPE> Stream<String> readUuidsOfTimestampedEntities(final Class<ENTITYTYPE> entityType,
                                                                       final PackageDescriptor packageDescriptor) {
-        final AbstractFile tableFile = getTableFile(entityType, packageDescriptor);
+        final AbstractFile tableFile = getTableTimestampFile(entityType, packageDescriptor);
         return tableReader.readUuidsOfTimestampedEntities(tableFile);
     }
 
@@ -38,7 +38,7 @@ class PackageReader implements IPackageDal {
     public <ENTITYTYPE> boolean checkWhetherPackageContainsEntity(final ENTITYTYPE entity,
                                                                   final PackageDescriptor packageDescriptor) {
         final Class<?> entityClass = entity.getClass();
-        final AbstractFile tableFile = getTableFile(entityClass, packageDescriptor);
+        final AbstractFile tableFile = getTableEntityFile(entityClass, packageDescriptor);
         return tableReader
                 .checkWhetherTableContainsEntity(entity, tableFile);
     }
@@ -46,7 +46,7 @@ class PackageReader implements IPackageDal {
     @Override
     public <ENTITYTYPE> long numberOfEntities(final Class<ENTITYTYPE> entity,
                                               final PackageDescriptor packageDescriptor) {
-        return getTableFile(entity, packageDescriptor).getNumberOfEntries();
+        return getTableEntityFile(entity, packageDescriptor).getNumberOfEntries();
     }
 
     @Override
@@ -55,9 +55,22 @@ class PackageReader implements IPackageDal {
         return tableReader.readEntities(metadataFile, METADATA_FORMAT_ADAPTER);
     }
 
-    <ENTITYTYPE> AbstractFile getTableFile(final Class<ENTITYTYPE> entityType, final PackageDescriptor packageDescriptor) {
+    <ENTITYTYPE> AbstractFile getTableTimestampFile(final Class<ENTITYTYPE> entityType, final PackageDescriptor packageDescriptor) {
+
+        final String tableFileName = entityType.getSimpleName() + Constants.TIMESTAMPS_SUFFIX + Constants.TABLE_EXTENSION;
+        return getTableFile(packageDescriptor, tableFileName);
+    }
+
+    <ENTITYTYPE> AbstractFile getTableEntityFile(final Class<ENTITYTYPE> entityType, final PackageDescriptor packageDescriptor) {
+
+        final String tableFileName = entityType.getSimpleName() + Constants.TABLE_EXTENSION;
+        return getTableFile(packageDescriptor, tableFileName);
+    }
+
+    private AbstractFile getTableFile(final PackageDescriptor packageDescriptor,
+                                      final String anObject) {
         return getPackageMetadata(packageDescriptor)
-                .filter(tableMetadata -> tableMetadata.getClassName().equals(entityType.getSimpleName() + Constants.TABLE_EXTENSION))
+                .filter(tableMetadata -> tableMetadata.getClassName().equals(anObject))
                 .findFirst()
                 .map(tableMetadata -> mapTableMetadataFile(tableMetadata, packageDescriptor))
                 .orElseThrow();

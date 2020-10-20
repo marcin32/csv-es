@@ -10,12 +10,10 @@ public class PackageWriterWrapper implements AutoCloseable {
 
     private final PackageDescriptorForWriting packageDescriptorForWriting;
 
-    public void writeEntity() {
-
-    }
-
-    public void closePackage() {
-
+    public <ENTITYTYPE> void writeEntity(final String entityId,
+                                         final ENTITYTYPE entity) {
+        packageWriter
+                .storeEntity(entityId, entity, packageDescriptorForWriting);
     }
 
     @Override
