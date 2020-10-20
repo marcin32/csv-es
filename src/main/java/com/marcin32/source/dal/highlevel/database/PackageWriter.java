@@ -2,6 +2,7 @@ package com.marcin32.source.dal.highlevel.database;
 
 import com.marcin32.source.dal.highlevel.table.TableWriter;
 import com.marcin32.source.dal.lowlevel.csv.CsvWriter;
+import com.marcin32.source.model.CsvEntry;
 import com.marcin32.source.model.PackageDescriptorForWriting;
 import com.marcin32.source.model.csv.MetadataAdapter;
 import com.marcin32.source.model.file.RawFile;
@@ -12,7 +13,6 @@ import java.util.Map;
 class PackageWriter {
 
     public static final MetadataAdapter METADATA_FORMAT_ADAPTER = new MetadataAdapter();
-    //private final PackageReader packageReader = new PackageReader();
 
     private final TableWriter tableWriter = new TableWriter();
 
@@ -28,12 +28,23 @@ class PackageWriter {
     }
 
     public <ENTITYTYPE> void storeEntityTimestamp(final String entityId,
-                                                            final ENTITYTYPE entity,
-                                                            final PackageDescriptorForWriting packageDescriptorForWriting) {
+                                                  final ENTITYTYPE entity,
+                                                  final PackageDescriptorForWriting packageDescriptorForWriting) {
         packageDescriptorForWriting
                 .logTimestampForEntity(entity);
         final RawFile tableFile = packageDescriptorForWriting
                 .getFileForWritingTimestamps(entity);
+        tableWriter
+                .writeTimestampForEntity(tableFile, entityId);
+    }
+
+    public void storeEntityTimestamp(final String entityId,
+                                     final String tableName,
+                                     final PackageDescriptorForWriting packageDescriptorForWriting) {
+        packageDescriptorForWriting
+                .logTimestampForEntityForFileName(tableName);
+        final RawFile tableFile = packageDescriptorForWriting
+                .getFileForWritingTimestampsFromFilename(tableName);
         tableWriter
                 .writeTimestampForEntity(tableFile, entityId);
     }
@@ -59,5 +70,15 @@ class PackageWriter {
         csvWriter
                 .saveEntity(metadataFile, METADATA_FORMAT_ADAPTER, tableName,
                         meta.getValue().toString());
+    }
+
+    public void storeRawEntity(final String fileName, final CsvEntry entry,
+                               final PackageDescriptorForWriting packageDescriptorForWriting) {
+        packageDescriptorForWriting
+                .logEntity(fileName);
+        final RawFile tableFile = packageDescriptorForWriting
+                .getFileForWritingEntities(fileName);
+        tableWriter
+                .writeRawEntity(tableFile, entry);
     }
 }

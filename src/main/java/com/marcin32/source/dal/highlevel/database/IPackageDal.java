@@ -1,5 +1,6 @@
 package com.marcin32.source.dal.highlevel.database;
 
+import com.marcin32.source.model.CsvEntry;
 import com.marcin32.source.model.PackageDescriptor;
 import com.marcin32.source.model.PackedTableMetadata;
 import com.marcin32.source.model.SourceEntry;
@@ -14,7 +15,14 @@ public interface IPackageDal {
 
     <ENTITYTYPE> boolean checkWhetherPackageContainsEntity(final ENTITYTYPE entity, final PackageDescriptor packageDescriptor);
 
+    boolean checkWhetherPackageContainsEntity(final String fileName, final CsvEntry currentEntity,
+                                              final PackageDescriptor packageDescriptor);
+
     <ENTITYTYPE> long numberOfEntities(Class<ENTITYTYPE> entity, final PackageDescriptor packageDescriptor);
 
     Stream<PackedTableMetadata> getPackageMetadata(final PackageDescriptor packageDescriptor);
+
+    Stream<CsvEntry> readRawCsvEntries(final String fileName, final PackageDescriptor packageDescriptor);
+
+    boolean doesContainFile(final String fileName, final PackageDescriptor packageDescriptor);
 }

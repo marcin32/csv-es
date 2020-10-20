@@ -1,6 +1,5 @@
 package com.marcin32.source.dal.highlevel.table;
 
-import com.marcin32.source.dal.lowlevel.csv.CsvReader;
 import com.marcin32.source.model.CsvEntry;
 import com.marcin32.source.model.SourceEntry;
 import com.marcin32.source.model.csv.ITableFormatAdapter;
@@ -10,8 +9,6 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 public class TableReader extends AbstractTableReader {
-
-    private final static CsvReader csvReader = new CsvReader();
 
     @Override
     public <ENTITYTYPE> Stream<SourceEntry<ENTITYTYPE>> readEntities(final AbstractFile file,
@@ -37,11 +34,9 @@ public class TableReader extends AbstractTableReader {
     }
 
     @Override
-    public <ENTITYTYPE> boolean checkWhetherTableContainsEntity(final String entityContentHash,
-                                                                final Class<ENTITYTYPE> entity,
-                                                                final AbstractFile file) {
-
-        return readEntities(file, entity)
+    public boolean checkWhetherTableContainsHash(final String entityContentHash,
+                                                 final AbstractFile file) {
+        return readRawCsvEntries(file)
                 .anyMatch(entry -> entry.getShaContentHash().equals(entityContentHash));
     }
 

@@ -16,10 +16,20 @@ public class ChangedEntityAdapter extends AbstractFormatAdapter<CsvEntry> {
         final String entityContent = line[3];
         try {
             return Optional.of(new CsvEntry(timeStamp, entityUuid, entityContentShaHash, entityContent));
-        } catch (Throwable ex) {
+        } catch (final Throwable ex) {
             ex.printStackTrace();
         }
         return Optional.empty();
+    }
+
+    @Override
+    public String serializeContent(final CsvEntry entity) {
+        return entity.getUuid() + Constants.CSV_SEPARATOR_FOR_WRITING +
+                entity.getTimestamp() +
+                Constants.CSV_SEPARATOR_FOR_WRITING +
+                entity.getShaContentHash() +
+                Constants.CSV_SEPARATOR_FOR_WRITING +
+                entity.getContent();
     }
 
     @Override

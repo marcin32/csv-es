@@ -147,7 +147,7 @@ public class FilesystemDal {
         return path.toFile().listFiles();
     }
 
-    public void copyFile(final Path source, final Path destination) throws IOException {
+    public static void copyFile(final Path source, final Path destination) throws IOException {
         FileUtils.copyFile(source.toFile(), destination.toFile());
     }
 
@@ -200,7 +200,7 @@ public class FilesystemDal {
         folder.delete();
     }
 
-    public void moveIntoSubdirectory(final File source, final String backupDirectoryName) {
+    public static void moveIntoSubdirectory(final File source, final String backupDirectoryName) {
         final Path parent = source.toPath().getParent();
         final File target = parent.resolve(backupDirectoryName).resolve(source.getName()).toFile();
         try {
@@ -222,6 +222,34 @@ public class FilesystemDal {
         final URL url = ClassLoader.getSystemResource(archiveName);
         return new File(url.getFile());
     }
+
+//    public static void moveOldPackagesToBackupDirectory(final Path parent) {
+//
+//        createDirectoryIfNotExists(parent, BACKUP_DIRECTORY_NAME);
+//
+//        final ReadingDescriptorsDal readingDescriptorsDal = new ReadingDescriptorsDal();
+//        final Optional<ReadingPackageDescriptor> lastDelta = readingDescriptorsDal
+//                .getLastDelta(parent);
+//        final Optional<ReadingPackageDescriptor> lastFullUpdate = readingDescriptorsDal
+//                .getLastFullUpdate(parent);
+//
+//        if (lastDelta.isPresent() && lastFullUpdate.isPresent()) {
+//            final String lastDeltaPackageName = lastDelta.get().getPackageName();
+//            final String lastFullUpdatePackageName = lastFullUpdate.get().getPackageName();
+//
+//            final File[] files = filesystemDal.listFiles(parent);
+//
+//            for (final File file : files) {
+//                if (!file.isDirectory()) {
+//                    final String fileName = file.getName();
+//                    if (!(fileName.equals(lastDeltaPackageName) || fileName.equals(lastFullUpdatePackageName)) &&
+//                            fileName.contains(UpdateScope.FULL_UPDATE.toString())) {
+//                        moveIntoSubdirectory(file, BACKUP_DIRECTORY_NAME);
+//                    }
+//                }
+//            }
+//        }
+//    }
 
     private FilesystemDal() {
 

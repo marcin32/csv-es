@@ -31,23 +31,40 @@ public class CachedTableReader extends AbstractTableReader {
     }
 
     @Override
-    public <ENTITYTYPE> boolean checkWhetherTableContainsEntity(final String entityContentHash,
-                                                                final Class<ENTITYTYPE> entity,
-                                                                final AbstractFile file) {
-
+    public boolean checkWhetherTableContainsHash(final String entityContentHash,
+                                                 final AbstractFile file) {
         if (!bloomCache.hasDatabasePopulated(file)) {
             synchronized (this) {
                 if (!bloomCache.hasDatabasePopulated(file)) {
-                    readEntities(file, entity)
-                            .forEach(element -> bloomCache.populateCache(file, element.getShaContentHash()));
+                    readEntities(file, CHANGED_ENTITY_FORMAT_ADAPTER)
+                            .forEach(element -> bloomCache.populateCache(file, entityContentHash));
 
                 }
             }
         }
         if (bloomCache.mightContain(file, entityContentHash)) {
-            return readEntities(file, entity)
+            return readEntities(file, CHANGED_ENTITY_FORMAT_ADAPTER)
                     .anyMatch(abstractCsvEntity -> abstractCsvEntity.getShaContentHash().equals(entityContentHash));
         }
         return false;
     }
+
+//    public <ENTITYTYPE> boolean checkWhetherTableContainsEntity(final Class<ENTITYTYPE> entity,
+//                                                                final AbstractFile file) {
+//
+//        if (!bloomCache.hasDatabasePopulated(file)) {
+//            synchronized (this) {
+//                if (!bloomCache.hasDatabasePopulated(file)) {
+//                    readEntities(file, entity)
+//                            .forEach(element -> bloomCache.populateCache(file, element.getShaContentHash()));
+//
+//                }
+//            }
+//        }
+//        if (bloomCache.mightContain(file, entityContentHash)) {
+//            return readEntities(file, entity)
+//                    .anyMatch(abstractCsvEntity -> abstractCsvEntity.getShaContentHash().equals(entityContentHash));
+//        }
+//        return false;
+//    }
 }

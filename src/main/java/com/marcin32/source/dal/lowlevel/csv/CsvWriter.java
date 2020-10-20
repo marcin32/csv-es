@@ -19,6 +19,14 @@ public class CsvWriter {
         fileWriter.appendFile(line, rawFile);
     }
 
+    public <ENTITYTYPE> void saveEntity(final RawFile rawFile,
+                                        final ITableFormatAdapter<ENTITYTYPE> formatAdapter,
+                                        final ENTITYTYPE entity) {
+
+        final String line = formatAdapter.serializeContent(entity);
+        fileWriter.appendFile(line, rawFile);
+    }
+
     public void closeCsvFile(final RawFile rawFile) {
         fileWriter.closeFile(rawFile);
     }

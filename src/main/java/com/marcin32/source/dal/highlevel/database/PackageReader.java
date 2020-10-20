@@ -3,10 +3,7 @@ package com.marcin32.source.dal.highlevel.database;
 import com.marcin32.source.base.Constants;
 import com.marcin32.source.base.PackageType;
 import com.marcin32.source.dal.highlevel.table.CachedTableReader;
-import com.marcin32.source.model.ITableMetadata;
-import com.marcin32.source.model.PackageDescriptor;
-import com.marcin32.source.model.PackedTableMetadata;
-import com.marcin32.source.model.SourceEntry;
+import com.marcin32.source.model.*;
 import com.marcin32.source.model.csv.MetadataAdapter;
 import com.marcin32.source.model.file.AbstractFile;
 import com.marcin32.source.model.file.PackedFile;
@@ -44,6 +41,15 @@ class PackageReader implements IPackageDal {
     }
 
     @Override
+    public boolean checkWhetherPackageContainsEntity(final String fileName,
+                                                     final CsvEntry currentEntity,
+                                                     final PackageDescriptor packageDescriptor) {
+        final AbstractFile tableFile = getTableFile(fileName, packageDescriptor);
+        return tableReader
+                .checkWhetherTableContainsHash(currentEntity.getShaContentHash(), tableFile);
+    }
+
+    @Override
     public <ENTITYTYPE> long numberOfEntities(final Class<ENTITYTYPE> entity,
                                               final PackageDescriptor packageDescriptor) {
         return getTableEntityFile(entity, packageDescriptor).getNumberOfEntries();
@@ -55,22 +61,38 @@ class PackageReader implements IPackageDal {
         return tableReader.readEntities(metadataFile, METADATA_FORMAT_ADAPTER);
     }
 
-    <ENTITYTYPE> AbstractFile getTableTimestampFile(final Class<ENTITYTYPE> entityType, final PackageDescriptor packageDescriptor) {
+    @Override
+    public boolean doesContainFile(final String fileName, final PackageDescriptor packageDescriptor) {
+        return getPackageMetadata(packageDescriptor)
+                .anyMatch(entry -> entry.equals(fileName));
+
+    }
+
+    @Override
+    public Stream<CsvEntry> readRawCsvEntries(final String fileName, final PackageDescriptor packageDescriptor) {
+        final AbstractFile file = mapTableMetadataFile(new PackedTableMetadata(fileName, 0), packageDescriptor);
+        return tableReader
+                .readRawCsvEntries(file);
+    }
+
+    <ENTITYTYPE> AbstractFile getTableTimestampFile(final Class<ENTITYTYPE> entityType,
+                                                    final PackageDescriptor packageDescriptor) {
 
         final String tableFileName = entityType.getSimpleName() + Constants.TIMESTAMPS_SUFFIX + Constants.TABLE_EXTENSION;
-        return getTableFile(packageDescriptor, tableFileName);
+        return getTableFile(tableFileName, packageDescriptor);
     }
 
-    <ENTITYTYPE> AbstractFile getTableEntityFile(final Class<ENTITYTYPE> entityType, final PackageDescriptor packageDescriptor) {
+    <ENTITYTYPE> AbstractFile getTableEntityFile(final Class<ENTITYTYPE> entityType,
+                                                 final PackageDescriptor packageDescriptor) {
 
         final String tableFileName = entityType.getSimpleName() + Constants.TABLE_EXTENSION;
-        return getTableFile(packageDescriptor, tableFileName);
+        return getTableFile(tableFileName, packageDescriptor);
     }
 
-    private AbstractFile getTableFile(final PackageDescriptor packageDescriptor,
-                                      final String anObject) {
+    private AbstractFile getTableFile(final String fileName,
+                                      final PackageDescriptor packageDescriptor) {
         return getPackageMetadata(packageDescriptor)
-                .filter(tableMetadata -> tableMetadata.getClassName().equals(anObject))
+                .filter(tableMetadata -> tableMetadata.getFileName().equals(fileName))
                 .findFirst()
                 .map(tableMetadata -> mapTableMetadataFile(tableMetadata, packageDescriptor))
                 .orElseThrow();
@@ -79,11 +101,11 @@ class PackageReader implements IPackageDal {
     private AbstractFile mapTableMetadataFile(final ITableMetadata tableMetadataFile,
                                               final PackageDescriptor packageDescriptor) {
         if (packageDescriptor.getPackageType().equals(PackageType.ARCHIVE)) {
-            return new PackedFile(tableMetadataFile.getClassName(),
+            return new PackedFile(tableMetadataFile.getFileName(),
                     tableMetadataFile.getNumberOfEntities(),
                     packageDescriptor.getBasePathWithPackageName());
         }
-        return new RawFile(tableMetadataFile.getClassName(),
+        return new RawFile(tableMetadataFile.getFileName(),
                 tableMetadataFile.getNumberOfEntities(),
                 packageDescriptor.getBasePathWithPackageName());
     }

@@ -2,7 +2,7 @@ package com.marcin32.source.model;
 
 public interface ITableMetadata {
 
-    String getClassName();
+    String getFileName();
 
     long getNumberOfEntities();
 }

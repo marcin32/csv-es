@@ -1,5 +1,6 @@
 package com.marcin32.source.dal.highlevel.table;
 
+import com.marcin32.source.model.CsvEntry;
 import com.marcin32.source.model.SourceEntry;
 import com.marcin32.source.model.csv.ITableFormatAdapter;
 import com.marcin32.source.model.file.AbstractFile;
@@ -19,6 +20,7 @@ public interface ITableReader {
 
     <ENTITYTYPE> boolean checkWhetherTableContainsEntity(final ENTITYTYPE entity, final AbstractFile file);
 
-    <ENTITYTYPE> boolean checkWhetherTableContainsEntity(final String entityContentHash, final Class<ENTITYTYPE> entity,
-                                                         final AbstractFile file);
+    boolean checkWhetherTableContainsHash(final String entityContentHash, final AbstractFile file);
+
+    Stream<CsvEntry> readRawCsvEntries(final AbstractFile file);
 }

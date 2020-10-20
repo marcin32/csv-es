@@ -1,6 +1,7 @@
 package com.marcin32.source.dal.highlevel.table;
 
 import com.marcin32.source.dal.lowlevel.csv.CsvWriter;
+import com.marcin32.source.model.CsvEntry;
 import com.marcin32.source.model.file.RawFile;
 
 public class TableWriter extends TableReader {
@@ -14,8 +15,13 @@ public class TableWriter extends TableReader {
         csvWriter.saveEntity(file, CHANGED_ENTITY_FORMAT_ADAPTER, entityId, content);
     }
 
-    public <ENTITYTYPE> void writeTimestampForEntity(final RawFile file,
-                                                     final String entityId) {
+    public void writeRawEntity(final RawFile file,
+                               final CsvEntry entity) {
+        csvWriter.saveEntity(file, CHANGED_ENTITY_FORMAT_ADAPTER, entity);
+    }
+
+    public void writeTimestampForEntity(final RawFile file,
+                                        final String entityId) {
         csvWriter.saveEntity(file, UNCHANGED_ENTITY_FORMAT_ADAPTER, entityId);
     }
 

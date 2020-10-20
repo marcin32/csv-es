@@ -42,7 +42,7 @@ public class PackageReaderTest {
 
             final PackedTableMetadata packedTableMetadata1 = metadata.get();
 
-            assertEquals(packedTableMetadata1.getClassName(), TestEntity1.class.getSimpleName() + Constants.TABLE_EXTENSION);
+            assertEquals(packedTableMetadata1.getFileName(), TestEntity1.class.getSimpleName() + Constants.TABLE_EXTENSION);
             try (final Stream<SourceEntry<TestEntity1>> sourceEntryStream = packageReader.readEntities(TestEntity1.class, package2345)) {
                 long numberOfEntities = sourceEntryStream.count();
                 assertEquals(numberOfEntities, packedTableMetadata1.getNumberOfEntities());
@@ -61,7 +61,7 @@ public class PackageReaderTest {
 
             final ITableMetadata packedTableMetadata1 = metadata.get();
 
-            assertEquals(packedTableMetadata1.getClassName(), TestEntity1.class.getSimpleName() + Constants.TABLE_EXTENSION);
+            assertEquals(packedTableMetadata1.getFileName(), TestEntity1.class.getSimpleName() + Constants.TABLE_EXTENSION);
             try (final Stream<SourceEntry<TestEntity1>> sourceEntryStream = packageReader.readEntities(TestEntity1.class, package1234)) {
                 long numberOfEntities = sourceEntryStream.count();
                 assertEquals(numberOfEntities, packedTableMetadata1.getNumberOfEntities());

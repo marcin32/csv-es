@@ -14,6 +14,11 @@ public class UnchangedEntityAdapter extends AbstractFormatAdapter<String> {
     }
 
     @Override
+    public String serializeContent(final String entity) {
+        return entity;
+    }
+
+    @Override
     String serializeContentInternal(final String... parts) {
         return String.join("", parts);
     }

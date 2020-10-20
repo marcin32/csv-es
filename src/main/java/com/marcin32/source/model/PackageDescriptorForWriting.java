@@ -31,6 +31,14 @@ public class PackageDescriptorForWriting extends PackageDescriptor {
         logLineForFileName(fileName);
     }
 
+    public void logEntity(final String fileName) {
+        logLineForFileName(fileName);
+    }
+
+    public void logTimestampForEntityForFileName(final String fileName) {
+        logLineForFileName(fileName);
+    }
+
     public <ENTITYTYPE> void logTimestampForEntity(final ENTITYTYPE entity) {
         final String fileName = getTimestampedFileName(entity);
         logLineForFileName(fileName);
@@ -41,8 +49,16 @@ public class PackageDescriptorForWriting extends PackageDescriptor {
         return prepareRawFile(fileName);
     }
 
+    public RawFile getFileForWritingTimestampsFromFilename(final String fileName) {
+        return prepareRawFile(fileName);
+    }
+
     public <ENTITYTYPE> RawFile getFileForWritingEntities(final ENTITYTYPE entity) {
         final String fileName = getEntitiesFileName(entity);
+        return prepareRawFile(fileName);
+    }
+
+    public RawFile getFileForWritingEntities(final String fileName) {
         return prepareRawFile(fileName);
     }
 
@@ -54,7 +70,7 @@ public class PackageDescriptorForWriting extends PackageDescriptor {
         return entity.getClass().getSimpleName() + Constants.TIMESTAMPS_SUFFIX + Constants.TABLE_EXTENSION;
     }
 
-    private void logLineForFileName(String fileName) {
+    private void logLineForFileName(final String fileName) {
         if (fileNameToLineCount.containsKey(fileName)) {
             final Long newValue = fileNameToLineCount.get(fileName) + 1;
             fileNameToLineCount
@@ -65,7 +81,7 @@ public class PackageDescriptorForWriting extends PackageDescriptor {
         }
     }
 
-    private RawFile prepareRawFile(String fileName) {
+    private RawFile prepareRawFile(final String fileName) {
         if (!classNameToRawFile.containsKey(fileName)) {
             synchronized (this) {
                 if (!classNameToRawFile.containsKey(fileName)) {

@@ -11,7 +11,7 @@ public class PackedTableMetadata implements ITableMetadata {
     }
 
     @Override
-    public String getClassName() {
+    public String getFileName() {
         return className;
     }
 

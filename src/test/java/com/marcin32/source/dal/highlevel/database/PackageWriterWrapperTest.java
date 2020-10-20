@@ -1,11 +1,9 @@
-package com.marcin32.source.dal.highlevel.manager;
+package com.marcin32.source.dal.highlevel.database;
 
 import com.marcin32.source.TestEntity1;
 import com.marcin32.source.base.Constants;
 import com.marcin32.source.base.PackageScope;
 import com.marcin32.source.base.PackageType;
-import com.marcin32.source.dal.highlevel.database.PackageReaderWrapper;
-import com.marcin32.source.dal.highlevel.database.PackageWriterWrapper;
 import com.marcin32.source.model.PackageDescriptor;
 import com.marcin32.source.model.PackageDescriptorForWriting;
 import com.marcin32.source.model.PackedTableMetadata;
@@ -29,7 +27,8 @@ public class PackageWriterWrapperTest {
 
         final File tempDir = temporaryFolder.newFolder();
         final long timestamp = System.currentTimeMillis();
-        final PackageDescriptorForWriting packageDescriptor = new PackageDescriptorForWriting(timestamp, PackageScope.FULL_PACKAGE,
+        final PackageDescriptorForWriting packageDescriptor = new PackageDescriptorForWriting(timestamp,
+                PackageScope.FULL_PACKAGE,
                 tempDir.toPath());
         try (final PackageWriterWrapper packageWriterWrapper = new PackageWriterWrapper(packageDescriptor)) {
 
@@ -54,7 +53,7 @@ public class PackageWriterWrapperTest {
         final PackageReaderWrapper packageReaderWrapper = new PackageReaderWrapper(packageForReading);
         final long numberOfEntitiesInMetadata = packageReaderWrapper
                 .getPackageMetadata()
-                .filter(meta -> meta.getClassName().equals(TestEntity1.class.getSimpleName() + Constants.TABLE_EXTENSION))
+                .filter(meta -> meta.getFileName().equals(TestEntity1.class.getSimpleName() + Constants.TABLE_EXTENSION))
                 .mapToLong(PackedTableMetadata::getNumberOfEntities)
                 .findFirst()
                 .getAsLong();

@@ -50,7 +50,7 @@ public class PackageWriterTest {
 
         final PackageReader packageReader = new PackageReader();
         final long numberOfEntitiesInMetadata = packageReader.getPackageMetadata(packageForReading)
-                .filter(meta -> meta.getClassName().equals(TestEntity1.class.getSimpleName() + Constants.TABLE_EXTENSION))
+                .filter(meta -> meta.getFileName().equals(TestEntity1.class.getSimpleName() + Constants.TABLE_EXTENSION))
                 .mapToLong(PackedTableMetadata::getNumberOfEntities)
                 .findFirst()
                 .getAsLong();
@@ -90,7 +90,7 @@ public class PackageWriterTest {
 
         final PackageReader packageReader = new PackageReader();
         final long numberOfEntitiesInMetadata = packageReader.getPackageMetadata(packageForReading)
-                .filter(meta -> meta.getClassName().equals(TestEntity1.class.getSimpleName() + Constants.TIMESTAMPS_SUFFIX + Constants.TABLE_EXTENSION))
+                .filter(meta -> meta.getFileName().equals(TestEntity1.class.getSimpleName() + Constants.TIMESTAMPS_SUFFIX + Constants.TABLE_EXTENSION))
                 .mapToLong(PackedTableMetadata::getNumberOfEntities)
                 .findFirst()
                 .getAsLong();

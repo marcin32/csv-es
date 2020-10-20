@@ -1,5 +1,6 @@
 package com.marcin32.source.model;
 
+import com.marcin32.source.base.Constants;
 import com.marcin32.source.base.PackageScope;
 import com.marcin32.source.base.PackageType;
 import com.marcin32.source.model.file.AbstractFile;
@@ -17,8 +18,6 @@ import static com.marcin32.source.base.Constants.ARCHIVE_EXTENSION;
 @Getter
 @AllArgsConstructor
 public class PackageDescriptor {
-
-    private final static String METADATA_FILENAME = "metadata.csv";
 
     Long timestamp;
 
@@ -51,8 +50,8 @@ public class PackageDescriptor {
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return new PackedFile(METADATA_FILENAME, tarEntries, getBasePathWithPackageName());
+            return new PackedFile(Constants.METADATA_FILENAME, tarEntries, getBasePathWithPackageName());
         }
-        return new RawFile(METADATA_FILENAME, getBasePathWithPackageName());
+        return new RawFile(Constants.METADATA_FILENAME, getBasePathWithPackageName());
     }
 }

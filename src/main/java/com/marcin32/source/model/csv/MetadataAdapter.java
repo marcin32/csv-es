@@ -19,6 +19,12 @@ public class MetadataAdapter extends AbstractFormatAdapter<PackedTableMetadata> 
     }
 
     @Override
+    public String serializeContent(final PackedTableMetadata entity) {
+        return String.join(Constants.CSV_SEPARATOR_FOR_WRITING,
+                entity.getFileName(), String.valueOf(entity.getNumberOfEntities()));
+    }
+
+    @Override
     String serializeContentInternal(final String... parts) {
         return String.join(Constants.CSV_SEPARATOR_FOR_WRITING, parts);
     }
