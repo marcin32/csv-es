@@ -59,7 +59,7 @@ public class RawFile extends AbstractFile {
         return Objects.requireNonNullElseGet(this.numberOfEntries, totalNumberOfLines::sum);
     }
 
-    public void appendLine(final String line) throws IOException, IllegalAccessException {
+    public synchronized void appendLine(final String line) throws IOException, IllegalAccessException {
 
         final BufferedWriter writerInstance = getWriter();
 

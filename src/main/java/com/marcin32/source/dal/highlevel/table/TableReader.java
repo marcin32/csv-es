@@ -47,6 +47,7 @@ public class TableReader extends AbstractTableReader {
             final ENTITYTYPE entity = gson.fromJson(abstractEntity.getContent(), entitytype);
             return Optional.of(new SourceEntry<>(abstractEntity, entity));
         } catch (Throwable ex) {
+            System.err.println("Entity to deserialize: " + abstractEntity.getContent());
             ex.printStackTrace();
         }
         return Optional.empty();
