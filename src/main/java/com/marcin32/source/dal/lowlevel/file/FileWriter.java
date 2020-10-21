@@ -8,11 +8,12 @@ public class FileWriter {
 
     public void appendFile(final String line,
                            final RawFile rawFile) {
-
-        try {
-            rawFile.appendLine(line);
-        } catch (final IOException | IllegalAccessException e) {
-            e.printStackTrace();
+        synchronized (rawFile) {
+            try {
+                rawFile.appendLine(line);
+            } catch (final IOException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
     }
 
