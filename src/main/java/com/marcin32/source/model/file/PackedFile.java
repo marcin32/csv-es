@@ -1,7 +1,6 @@
 package com.marcin32.source.model.file;
 
 import com.marcin32.source.utils.FilesystemDal;
-import lombok.Getter;
 import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 
 import java.io.BufferedReader;
@@ -11,7 +10,6 @@ import java.nio.file.Path;
 import java.util.Optional;
 import java.util.stream.Stream;
 
-@Getter
 public class PackedFile extends AbstractFile {
 
     private final Path archivePath;
@@ -36,6 +34,14 @@ public class PackedFile extends AbstractFile {
 
     @Override
     public long getNumberOfEntries() {
+        return this.numberOfLines;
+    }
+
+    public Path getArchivePath() {
+        return this.archivePath;
+    }
+
+    public long getNumberOfLines() {
         return this.numberOfLines;
     }
 }
