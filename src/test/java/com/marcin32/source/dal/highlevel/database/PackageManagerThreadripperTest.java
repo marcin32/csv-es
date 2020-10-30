@@ -57,6 +57,56 @@ public class PackageManagerThreadripperTest {
         assertEquals(count, 64 * ENTITY_COUNT);
     }
 
+    @Test
+    public void shouldCreateSecondDeltaPackage() throws IOException, InterruptedException {
+        final File file = temporaryFolder.newFolder();
+        final Random random = new Random();
+
+        List<Thread> threads = new ArrayList<>(64);
+
+        try (final PackageWriterWrapper newPackage = PackageManager.createNewPackage(file.toPath())) {
+
+            for (int i = 0; i < 64; ++i) {
+                final Runnable runnable = thread(i, newPackage, random);
+                final Thread thread = new Thread(runnable);
+                threads.add(thread);
+            }
+
+            threads.forEach(Thread::start);
+
+            for (final Thread th : threads) {
+                th.join();
+            }
+        }
+
+        Optional<PackageReaderWrapper> latestDeltaPackage = PackageManager
+                .getLatestDeltaPackage(file.toPath());
+
+        assertTrue(latestDeltaPackage.isPresent());
+
+        threads = new ArrayList<>(64);
+
+        try (final PackageWriterWrapper newPackage = PackageManager.createNewPackage(file.toPath())) {
+
+            for (int i = 0; i < 64; ++i) {
+                final Runnable runnable = thread(i, newPackage, random);
+                final Thread thread = new Thread(runnable);
+                threads.add(thread);
+            }
+
+            threads.forEach(Thread::start);
+
+            for (final Thread th : threads) {
+                th.join();
+            }
+        }
+
+        latestDeltaPackage = PackageManager
+                .getLatestDeltaPackage(file.toPath());
+
+        assertTrue(latestDeltaPackage.isPresent());
+    }
+
     private Runnable thread(final int i, final PackageWriterWrapper newPackage, final Random random) {
         return () -> {
             for (int j = 0; j < ENTITY_COUNT; ++j) {

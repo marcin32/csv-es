@@ -8,12 +8,17 @@ import com.marcin32.source.model.csv.MetadataAdapter;
 import com.marcin32.source.model.file.AbstractFile;
 import com.marcin32.source.model.file.PackedFile;
 import com.marcin32.source.model.file.RawFile;
+import lombok.Value;
 
+import java.util.HashMap;
+import java.util.Map;
 import java.util.stream.Stream;
 
 class PackageReader implements IPackageDal {
 
     private final CachedTableReader tableReader = new CachedTableReader();
+
+    private final Map<Pair<PackageDescriptor, String>, AbstractFile> openedFilesCache = new HashMap<>();
 
     public static final MetadataAdapter METADATA_FORMAT_ADAPTER = new MetadataAdapter();
 
@@ -91,11 +96,18 @@ class PackageReader implements IPackageDal {
 
     private AbstractFile getTableFile(final String fileName,
                                       final PackageDescriptor packageDescriptor) {
-        return getPackageMetadata(packageDescriptor)
+        final Pair<PackageDescriptor, String> packageFileKey = new Pair<>(packageDescriptor, fileName);
+        if(openedFilesCache.containsKey(packageFileKey)) {
+            return openedFilesCache.get(packageFileKey);
+        }
+
+        final AbstractFile abstractFile = getPackageMetadata(packageDescriptor)
                 .filter(tableMetadata -> tableMetadata.getFileName().equals(fileName))
                 .findFirst()
                 .map(tableMetadata -> mapTableMetadataFile(tableMetadata, packageDescriptor))
                 .orElseThrow();
+        openedFilesCache.put(packageFileKey, abstractFile);
+        return abstractFile;
     }
 
     private AbstractFile mapTableMetadataFile(final ITableMetadata tableMetadataFile,
@@ -108,5 +120,11 @@ class PackageReader implements IPackageDal {
         return new RawFile(tableMetadataFile.getFileName(),
                 tableMetadataFile.getNumberOfEntities(),
                 packageDescriptor.getBasePathWithPackageName());
+    }
+
+    @Value
+    private static class Pair<T1, T2> {
+        T1 t1;
+        T2 t2;
     }
 }
