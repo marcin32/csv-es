@@ -32,7 +32,7 @@ dependencies {
     implementation "com.google.code.gson:gson:+"
     //implementation "org.projectlombok:lombok:${lombokVersion}"
     compileOnly "org.projectlombok:lombok:${lombokVersion}"
-    annotationProcessor  "org.projectlombok:lombok:${lombokVersion}"
+    annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
     //implementation "io.reactivex.rxjava2:rxjava:${rxJavaVersion}"
 
     //testImplementation "junit:junit"
@@ -55,6 +55,10 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 artifacts {
     archives sourcesJar
     //archives javadocJar
+}
+
+subprojects {
+    version = rootProject.version
 }
 
 // To specify a license in the pom:

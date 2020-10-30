@@ -107,6 +107,8 @@ public class DeltaProcessingUtil {
         //    previousFullPackage.getPackageDescriptor().get
         //    FilesystemDal.copyFile();
         //}
+
+        // TODO: performance improvement: optimize - clear cache after processing each file
     }
 
     private void processEntityForDelta(final PackageReaderWrapper previousFullUpdate,
