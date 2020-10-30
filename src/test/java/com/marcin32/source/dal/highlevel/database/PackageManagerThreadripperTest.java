@@ -11,13 +11,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.Random;
+import java.util.stream.LongStream;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
 public class PackageManagerThreadripperTest {
 
-    public static final int ENTITY_COUNT = 10000;
+    public static final int ENTITY_COUNT = 1000;
     @Rule
     public TemporaryFolder temporaryFolder = new TemporaryFolder();
 
@@ -112,9 +113,16 @@ public class PackageManagerThreadripperTest {
             for (int j = 0; j < ENTITY_COUNT; ++j) {
                 final int index = random.nextInt();
                 final String uuid = "uuid" + index;
-                final TestEntity1 testEntity1 = new TestEntity1(uuid, "content1" + i + index);
+                final TestEntity1 testEntity1 = new TestEntity1(uuid, multiplyLenght("content1" + i + index, 11));
                 newPackage.storeEntity(uuid, testEntity1);
             }
         };
+    }
+
+    private String multiplyLenght(final String content, final int times) {
+        return LongStream.range(1, times)
+                .mapToObj(c -> content)
+                .reduce((a, b) -> a + b)
+                .get();
     }
 }
