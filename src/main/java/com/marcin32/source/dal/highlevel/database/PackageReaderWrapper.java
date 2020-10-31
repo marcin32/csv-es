@@ -6,6 +6,8 @@ import com.marcin32.source.model.PackageDescriptor;
 import com.marcin32.source.model.PackedTableMetadata;
 import com.marcin32.source.model.SourceEntry;
 
+import java.util.*;
+import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PackageReaderWrapper {
@@ -35,13 +37,7 @@ public class PackageReaderWrapper {
         return packageReader.readUuidsOfTimestampedEntities(entityClass, packageDescriptor);
     }
 
-    //public <ENTITYTYPE> boolean checkWhetherPackageContainsEntity(final ENTITYTYPE entity,
-    //                                                              final PackageDescriptor packageDescriptor) {
-    //    return packageReader
-    //            .checkWhetherPackageContainsEntity(entity, packageDescriptor);
-    //}
-
-    public boolean checkWhetherPackageContainsEntity(final String fileName, final CsvEntry currentEntity) {
+    public boolean checkWhetherPackageMightContainEntity(final String fileName, final CsvEntry currentEntity) {
 
         return packageReader
                 .checkWhetherPackageContainsEntity(fileName, currentEntity, packageDescriptor);
@@ -61,5 +57,41 @@ public class PackageReaderWrapper {
 
     public void finalizedrdr() {
         packageReader.finalizedrdr();
+    }
+
+    public Map<Boolean, Set<CsvEntry>> splitEntitiesIntoContainedOrNot(final String fileName,
+                                                                       final List<CsvEntry> entitiesFromAnotherPackage) {
+        final List<String> collect = entitiesFromAnotherPackage
+                .stream()
+                .map(CsvEntry::getShaContentHash)
+                .collect(Collectors.toList());
+
+        final Map<Boolean, Set<CsvEntry>> containedToEntries = new HashMap<>();
+
+        try (final Stream<CsvEntry> csvEntryStream = readRawCsvEntries(fileName)) {
+            csvEntryStream
+                    .forEach(entry -> divide(entry, containedToEntries, collect));
+        }
+
+        return containedToEntries;
+    }
+
+    private void divide(final CsvEntry entry,
+                        final Map<Boolean, Set<CsvEntry>> containedToEntries,
+                        final List<String> hashes) {
+        if(hashes.contains(entry.getShaContentHash())) {
+            addToContainer(containedToEntries, entry, true);
+        } else {
+            addToContainer(containedToEntries, entry, false);
+        }
+    }
+
+    private void addToContainer(final Map<Boolean, Set<CsvEntry>> containedToEntries,
+                                final CsvEntry entry,
+                                final boolean isContained) {
+        if(!containedToEntries.containsKey(isContained)) {
+            containedToEntries.put(isContained, new HashSet<>());
+        }
+        containedToEntries.get(isContained).add(entry);
     }
 }

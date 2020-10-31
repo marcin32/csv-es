@@ -24,7 +24,7 @@ public abstract class AbstractTableReader implements ITableReader {
     public <ENTITYTYPE> boolean checkWhetherTableContainsEntity(final ENTITYTYPE entity,
                                                                 final AbstractFile file) {
         final String shaHash = getEntityHash(entity);
-        return checkWhetherTableContainsHash(shaHash, file);
+        return checkWhetherTableMightContainHash(shaHash, file);
     }
 
     <ENTITYTYPE> String getEntityHash(final ENTITYTYPE entity) {

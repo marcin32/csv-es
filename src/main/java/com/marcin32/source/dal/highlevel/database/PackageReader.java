@@ -50,7 +50,7 @@ class PackageReader implements IPackageDal {
                                                      final PackageDescriptor packageDescriptor) {
         final AbstractFile tableFile = getTableFile(fileName, packageDescriptor);
         return tableReader
-                .checkWhetherTableContainsHash(currentEntity.getShaContentHash(), tableFile);
+                .checkWhetherTableMightContainHash(currentEntity.getShaContentHash(), tableFile);
     }
 
     @Override

@@ -34,8 +34,8 @@ public class TableReader extends AbstractTableReader {
     }
 
     @Override
-    public boolean checkWhetherTableContainsHash(final String entityContentHash,
-                                                 final AbstractFile file) {
+    public boolean checkWhetherTableMightContainHash(final String entityContentHash,
+                                                     final AbstractFile file) {
         return readRawCsvEntries(file)
                 .anyMatch(entry -> entry.getShaContentHash().equals(entityContentHash));
     }

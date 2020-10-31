@@ -20,7 +20,7 @@ public interface ITableReader {
 
     <ENTITYTYPE> boolean checkWhetherTableContainsEntity(final ENTITYTYPE entity, final AbstractFile file);
 
-    boolean checkWhetherTableContainsHash(final String entityContentHash, final AbstractFile file);
+    boolean checkWhetherTableMightContainHash(final String entityContentHash, final AbstractFile file);
 
     Stream<CsvEntry> readRawCsvEntries(final AbstractFile file);
 

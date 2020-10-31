@@ -13,11 +13,12 @@ import com.marcin32.source.model.PackedTableMetadata;
 
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import java.util.stream.StreamSupport;
+
+import static java.util.Spliterator.ORDERED;
 
 public class DeltaProcessingUtil {
 
@@ -104,9 +105,23 @@ public class DeltaProcessingUtil {
                                    final PackageWriterWrapper deltaWriter) {
         // TODO: optimize method
         //if (previousFullPackage.doesContainFile(tableMetadata.getFileName())) {
-        currentFullPackage.readRawCsvEntries(tableMetadata.getFileName())
+
+        final Stream<CsvEntry> preFilteredEntries = currentFullPackage
+                .readRawCsvEntries(tableMetadata.getFileName())
+                .map(entry -> preFilterEntityCandidates(previousFullPackage,
+                        deltaWriter, tableMetadata.getFileName(), entry))
+                .filter(Optional::isPresent)
+                .map(Optional::get);
+
+        BatchingIterator.batchedStreamOf(preFilteredEntries, 100)
                 .forEach(entry -> processEntityForDelta(previousFullPackage,
                         deltaWriter, tableMetadata.getFileName(), entry));
+        //.forEach(System.out::println);
+
+
+        //final List<CsvEntry> collect = currentFullPackage.readRawCsvEntries(tableMetadata.getFileName())
+
+
         //} else {
         //    previousFullPackage.getPackageDescriptor().get
         //    FilesystemDal.copyFile();
@@ -115,16 +130,89 @@ public class DeltaProcessingUtil {
         // TODO: performance improvement: optimize - clear cache after processing each file
     }
 
+
+    private Optional<CsvEntry> preFilterEntityCandidates(final PackageReaderWrapper previousFullUpdate,
+                                                         final PackageWriterWrapper deltaPackage,
+                                                         final String fileName,
+                                                         final CsvEntry currentEntity) {
+        if (previousFullUpdate.checkWhetherPackageMightContainEntity(fileName, currentEntity)) {
+            return Optional.of(currentEntity);
+        } else {
+            deltaPackage.storeRawEntity(fileName, currentEntity);
+            return Optional.empty();
+        }
+    }
+
     private void processEntityForDelta(final PackageReaderWrapper previousFullUpdate,
                                        final PackageWriterWrapper deltaPackage,
                                        final String fileName,
-                                       final CsvEntry currentEntity) {
-        if (previousFullUpdate.checkWhetherPackageContainsEntity(fileName, currentEntity)) {
-            final String timestampedFilename = fileName.replace(Constants.TABLE_EXTENSION, "")
-                    + Constants.TIMESTAMPS_SUFFIX + Constants.TABLE_EXTENSION;
-            deltaPackage.storeTimestampForEntity(currentEntity.getUuid(), timestampedFilename);
-        } else {
-            deltaPackage.storeRawEntity(fileName, currentEntity);
+                                       final List<CsvEntry> currentEntities) {
+        final Map<Boolean, Set<CsvEntry>> booleanSetMap = previousFullUpdate
+                .splitEntitiesIntoContainedOrNot(fileName, currentEntities);
+
+        if (booleanSetMap.containsKey(true)) {
+            for (final CsvEntry entryToTimestamp : booleanSetMap.get(true)) {
+                final String timestampedFilename = fileName.replace(Constants.TABLE_EXTENSION, "")
+                        + Constants.TIMESTAMPS_SUFFIX + Constants.TABLE_EXTENSION;
+                deltaPackage.storeTimestampForEntity(entryToTimestamp.getUuid(), timestampedFilename);
+            }
+        }
+        if (booleanSetMap.containsKey(false)) {
+            for (final CsvEntry entryToStore : booleanSetMap.get(false)) {
+
+                deltaPackage.storeRawEntity(fileName, entryToStore);
+            }
+        }
+    }
+
+    /**
+     * An iterator which returns batches of items taken from another iterator
+     */
+    public static class BatchingIterator<T> implements Iterator<List<T>> {
+        /**
+         * Given a stream, convert it to a stream of batches no greater than the
+         * batchSize.
+         *
+         * @param originalStream to convert
+         * @param batchSize      maximum size of a batch
+         * @param <T>            type of items in the stream
+         * @return a stream of batches taken sequentially from the original stream
+         */
+        public static <T> Stream<List<T>> batchedStreamOf(Stream<T> originalStream, int batchSize) {
+            return asStream(new BatchingIterator<>(originalStream.iterator(), batchSize));
+        }
+
+        private static <T> Stream<T> asStream(Iterator<T> iterator) {
+            return StreamSupport.stream(
+                    Spliterators.spliteratorUnknownSize(iterator, ORDERED),
+                    false);
+        }
+
+        private final int batchSize;
+        private List<T> currentBatch;
+        private final Iterator<T> sourceIterator;
+
+        public BatchingIterator(Iterator<T> sourceIterator, int batchSize) {
+            this.batchSize = batchSize;
+            this.sourceIterator = sourceIterator;
+        }
+
+        @Override
+        public boolean hasNext() {
+            prepareNextBatch();
+            return currentBatch != null && !currentBatch.isEmpty();
+        }
+
+        @Override
+        public List<T> next() {
+            return currentBatch;
+        }
+
+        private void prepareNextBatch() {
+            currentBatch = new ArrayList<>(batchSize);
+            while (sourceIterator.hasNext() && currentBatch.size() < batchSize) {
+                currentBatch.add(sourceIterator.next());
+            }
         }
     }
 }

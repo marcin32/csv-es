@@ -35,8 +35,8 @@ public class CachedTableReader extends AbstractTableReader {
     }
 
     @Override
-    public boolean checkWhetherTableContainsHash(final String entityContentHash,
-                                                 final AbstractFile file) {
+    public boolean checkWhetherTableMightContainHash(final String entityContentHash,
+                                                     final AbstractFile file) {
         if (!bloomCache.hasDatabasePopulated(file)) {
             synchronized (this) {
                 if (!bloomCache.hasDatabasePopulated(file)) {
@@ -46,20 +46,7 @@ public class CachedTableReader extends AbstractTableReader {
                 }
             }
         }
-        if (bloomCache.mightContain(file, entityContentHash)) {
-            stats("mightContain");
-            final boolean b = tableReader
-                    .checkWhetherTableContainsHash(entityContentHash, file);
-            if (b) {
-                stats("might, and did");
-            } else {
-                stats("might, but didnt");
-            }
-            return b;
-
-        }
-        stats("shouldnt contain");
-        return false;
+        return bloomCache.mightContain(file, entityContentHash);
     }
 
     private void stats(final String str) {
