@@ -58,4 +58,8 @@ public class PackageWriterWrapper implements AutoCloseable {
                 .mapToLong(Map.Entry::getValue)
                 .sum() > 0;
     }
+
+    public void finalizedrdr() {
+        //packageWriter.finalizedrdr();
+    }
 }

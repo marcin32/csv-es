@@ -25,4 +25,6 @@ public interface IPackageDal {
     Stream<CsvEntry> readRawCsvEntries(final String fileName, final PackageDescriptor packageDescriptor);
 
     boolean doesContainFile(final String fileName, final PackageDescriptor packageDescriptor);
+
+    void finalizedrdr();
 }

@@ -35,11 +35,11 @@ public class PackageReaderWrapper {
         return packageReader.readUuidsOfTimestampedEntities(entityClass, packageDescriptor);
     }
 
-    public <ENTITYTYPE> boolean checkWhetherPackageContainsEntity(final ENTITYTYPE entity,
-                                                                  final PackageDescriptor packageDescriptor) {
-        return packageReader
-                .checkWhetherPackageContainsEntity(entity, packageDescriptor);
-    }
+    //public <ENTITYTYPE> boolean checkWhetherPackageContainsEntity(final ENTITYTYPE entity,
+    //                                                              final PackageDescriptor packageDescriptor) {
+    //    return packageReader
+    //            .checkWhetherPackageContainsEntity(entity, packageDescriptor);
+    //}
 
     public boolean checkWhetherPackageContainsEntity(final String fileName, final CsvEntry currentEntity) {
 
@@ -57,5 +57,9 @@ public class PackageReaderWrapper {
 
     public boolean doesContainFile(final String fileName) {
         return packageReader.doesContainFile(fileName, packageDescriptor);
+    }
+
+    public void finalizedrdr() {
+        packageReader.finalizedrdr();
     }
 }

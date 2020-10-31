@@ -23,4 +23,6 @@ public interface ITableReader {
     boolean checkWhetherTableContainsHash(final String entityContentHash, final AbstractFile file);
 
     Stream<CsvEntry> readRawCsvEntries(final AbstractFile file);
+
+    public void finalizedrdr();
 }

@@ -91,6 +91,10 @@ public class DeltaProcessingUtil {
                     .filter(packedTableMetadata -> !packedTableMetadata.getFileName().equals(Constants.METADATA_FILENAME))
                     .forEach(fileName -> processSingleFile(fileName,
                             currentFullPackage, previousFullPackage, deltaWriter));
+
+            deltaWriter.finalizedrdr();
+            currentFullPackage.finalizedrdr();
+            previousFullPackage.finalizedrdr();
         }
     }
 

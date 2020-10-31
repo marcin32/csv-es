@@ -40,6 +40,11 @@ public class TableReader extends AbstractTableReader {
                 .anyMatch(entry -> entry.getShaContentHash().equals(entityContentHash));
     }
 
+    @Override
+    public void finalizedrdr() {
+
+    }
+
     static <ENTITYTYPE> Optional<SourceEntry<ENTITYTYPE>> deserializeEntity(final CsvEntry abstractEntity,
                                                                             final Class<ENTITYTYPE> entitytype) {
 
