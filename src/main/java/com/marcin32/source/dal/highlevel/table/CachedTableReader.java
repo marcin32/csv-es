@@ -41,7 +41,7 @@ public class CachedTableReader extends AbstractTableReader {
             synchronized (this) {
                 if (!bloomCache.hasDatabasePopulated(file)) {
                     readRawCsvEntries(file)
-                            .forEach(element -> bloomCache.populateCache(file, entityContentHash));
+                            .forEach(element -> bloomCache.populateCache(file, element.getShaContentHash()));
 
                 }
             }

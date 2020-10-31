@@ -1,6 +1,9 @@
 package com.marcin32.source.dal.highlevel.database;
 
 import com.marcin32.source.TestEntity1;
+import com.marcin32.source.base.PackageScope;
+import com.marcin32.source.base.PackageType;
+import com.marcin32.source.model.PackageDescriptor;
 import com.marcin32.source.model.PackedTableMetadata;
 import org.junit.Rule;
 import org.junit.Test;
@@ -8,11 +11,17 @@ import org.junit.rules.TemporaryFolder;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import java.util.stream.LongStream;
+import java.util.stream.Stream;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+
 
 public class PackageManagerTest {
 
@@ -96,6 +105,26 @@ public class PackageManagerTest {
                 .sum();
 
         assertEquals(countFromParsing, summedAmountOfEntities);
+    }
+
+    @Test
+    public void shouldSortProperly() throws IOException {
+
+        final Path tempDir = temporaryFolder.newFolder().toPath();
+
+        final PackageDescriptor p1 = new PackageDescriptor(3L, PackageScope.FULL_PACKAGE,
+                PackageType.ARCHIVE, tempDir);
+        final PackageDescriptor p2 = new PackageDescriptor(1L, PackageScope.FULL_PACKAGE,
+                PackageType.ARCHIVE, tempDir);
+        final PackageDescriptor p3 = new PackageDescriptor(2L, PackageScope.FULL_PACKAGE,
+                PackageType.ARCHIVE, tempDir);
+
+        final List<Long> actualOrder = Stream.of(p1, p2, p3)
+                .sorted(PackageManager::sort)
+                .map(PackageDescriptor::getTimestamp)
+                .collect(Collectors.toList());
+
+        assertThat(actualOrder).containsExactly(1L, 2L, 3L);
     }
 
     private String multiplyLenght(final String content, final int times) {
