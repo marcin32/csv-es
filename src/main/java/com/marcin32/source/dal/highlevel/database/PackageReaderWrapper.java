@@ -7,7 +7,6 @@ import com.marcin32.source.model.PackedTableMetadata;
 import com.marcin32.source.model.SourceEntry;
 
 import java.util.*;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 public class PackageReaderWrapper {
@@ -60,36 +59,41 @@ public class PackageReaderWrapper {
     }
 
     public Map<Boolean, Set<CsvEntry>> splitEntitiesIntoContainedOrNot(final String fileName,
-                                                                       final List<CsvEntry> entitiesFromAnotherPackage) {
-        final List<String> collect = entitiesFromAnotherPackage
-                .stream()
-                .map(CsvEntry::getShaContentHash)
-                .collect(Collectors.toList());
-
+                                                                       final List<CsvEntry> entitiesFromCurrentPackage) {
         final Map<Boolean, Set<CsvEntry>> containedToEntries = new HashMap<>();
+        //final List<String> hashesFromCurrentPackage = entitiesFromCurrentPackage
+        //        .stream()
+        //        .map(CsvEntry::getShaContentHash)
+        //        .collect(Collectors.toList());
+
 
         try (final Stream<CsvEntry> csvEntryStream = readRawCsvEntries(fileName)) {
             csvEntryStream
-                    .forEach(entry -> divide(entry, containedToEntries, collect));
+                    .forEach(entryFromPreviousPackage -> divide(entryFromPreviousPackage, containedToEntries, entitiesFromCurrentPackage));
         }
 
         return containedToEntries;
     }
 
-    private void divide(final CsvEntry entry,
+    private void divide(final CsvEntry entryFromPreviousPackage,
                         final Map<Boolean, Set<CsvEntry>> containedToEntries,
-                        final List<String> hashes) {
-        if(hashes.contains(entry.getShaContentHash())) {
-            addToContainer(containedToEntries, entry, true);
-        } else {
-            addToContainer(containedToEntries, entry, false);
+                        final List<CsvEntry> entitiesFromCurrentPackage) {
+        final String uuid = entryFromPreviousPackage.getUuid();
+        if (entitiesFromCurrentPackage.stream().anyMatch(e -> e.getUuid().equals(uuid))) {
+            if (entitiesFromCurrentPackage.stream()
+                    .anyMatch(e ->e.getShaContentHash()
+                            .equals((entryFromPreviousPackage.getShaContentHash())))) {
+                addToContainer(containedToEntries, entryFromPreviousPackage, true);
+            } else {
+                addToContainer(containedToEntries, entryFromPreviousPackage, false);
+            }
         }
     }
 
     private void addToContainer(final Map<Boolean, Set<CsvEntry>> containedToEntries,
                                 final CsvEntry entry,
                                 final boolean isContained) {
-        if(!containedToEntries.containsKey(isContained)) {
+        if (!containedToEntries.containsKey(isContained)) {
             containedToEntries.put(isContained, new HashSet<>());
         }
         containedToEntries.get(isContained).add(entry);

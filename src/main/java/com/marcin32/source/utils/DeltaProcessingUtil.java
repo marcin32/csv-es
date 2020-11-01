@@ -106,16 +106,16 @@ public class DeltaProcessingUtil {
         // TODO: optimize method
         //if (previousFullPackage.doesContainFile(tableMetadata.getFileName())) {
 
-        final Stream<CsvEntry> preFilteredEntries = currentFullPackage
+        final Stream<CsvEntry> preFilteredEntriesFromCurrentPackage = currentFullPackage
                 .readRawCsvEntries(tableMetadata.getFileName())
                 .map(entry -> preFilterEntityCandidates(previousFullPackage,
                         deltaWriter, tableMetadata.getFileName(), entry))
                 .filter(Optional::isPresent)
                 .map(Optional::get);
 
-        BatchingIterator.batchedStreamOf(preFilteredEntries, 100)
-                .forEach(entry -> processEntityForDelta(previousFullPackage,
-                        deltaWriter, tableMetadata.getFileName(), entry));
+        BatchingIterator.batchedStreamOf(preFilteredEntriesFromCurrentPackage, 100)
+                .forEach(entriesFromCurrentPackage -> processEntityForDelta(previousFullPackage,
+                        deltaWriter, tableMetadata.getFileName(), entriesFromCurrentPackage));
         //.forEach(System.out::println);
 
 
@@ -146,9 +146,9 @@ public class DeltaProcessingUtil {
     private void processEntityForDelta(final PackageReaderWrapper previousFullUpdate,
                                        final PackageWriterWrapper deltaPackage,
                                        final String fileName,
-                                       final List<CsvEntry> currentEntities) {
+                                       final List<CsvEntry> entriesFromCurrentPackage) {
         final Map<Boolean, Set<CsvEntry>> booleanSetMap = previousFullUpdate
-                .splitEntitiesIntoContainedOrNot(fileName, currentEntities);
+                .splitEntitiesIntoContainedOrNot(fileName, entriesFromCurrentPackage);
 
         if (booleanSetMap.containsKey(true)) {
             for (final CsvEntry entryToTimestamp : booleanSetMap.get(true)) {
