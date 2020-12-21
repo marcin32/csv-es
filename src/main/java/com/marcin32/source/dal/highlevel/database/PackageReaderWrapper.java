@@ -5,8 +5,11 @@ import com.marcin32.source.model.CsvEntry;
 import com.marcin32.source.model.PackageDescriptor;
 import com.marcin32.source.model.PackedTableMetadata;
 import com.marcin32.source.model.SourceEntry;
-
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.stream.Stream;
 
 public class PackageReaderWrapper {
@@ -69,15 +72,15 @@ public class PackageReaderWrapper {
 
         try (final Stream<CsvEntry> csvEntryStream = readRawCsvEntries(fileName)) {
             csvEntryStream
-                    .forEach(entryFromPreviousPackage -> divide(entryFromPreviousPackage, containedToEntries, entitiesFromCurrentPackage));
+                    .forEach(entryFromPreviousPackage -> assignToContainer(entryFromPreviousPackage, containedToEntries, entitiesFromCurrentPackage));
         }
 
         return containedToEntries;
     }
 
-    private void divide(final CsvEntry entryFromPreviousPackage,
-                        final Map<Boolean, Set<CsvEntry>> containedToEntries,
-                        final List<CsvEntry> entitiesFromCurrentPackage) {
+    private void assignToContainer(final CsvEntry entryFromPreviousPackage,
+                                   final Map<Boolean, Set<CsvEntry>> containedToEntries,
+                                   final List<CsvEntry> entitiesFromCurrentPackage) {
         final String uuid = entryFromPreviousPackage.getUuid();
         if (entitiesFromCurrentPackage.stream().anyMatch(e -> e.getUuid().equals(uuid))) {
             if (entitiesFromCurrentPackage.stream()

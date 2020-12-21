@@ -1,28 +1,24 @@
 package com.marcin32.source.dal.highlevel.database;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
+
 import com.marcin32.source.TestEntity1;
 import com.marcin32.source.base.Constants;
-import com.marcin32.source.base.PackageScope;
-import com.marcin32.source.base.PackageType;
 import com.marcin32.source.model.ITableMetadata;
 import com.marcin32.source.model.PackageDescriptor;
 import com.marcin32.source.model.PackedTableMetadata;
 import com.marcin32.source.model.SourceEntry;
-import org.junit.Test;
-
-import java.io.File;
-import java.nio.file.Path;
 import java.util.Optional;
 import java.util.stream.Stream;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.Test;
 
 public class PackageReaderTest {
 
     @Test
     public void shouldOpenPackageAndAccessMetadata() {
-        final PackageDescriptor package2345 = get2345Package();
+        final PackageDescriptor package2345 = CommonTestResources.get2345Package();
         final PackageReader packageReader = new PackageReader();
 
         try (final Stream<PackedTableMetadata> tableMetadata = packageReader.getPackageMetadata(package2345)) {
@@ -33,7 +29,7 @@ public class PackageReaderTest {
 
     @Test
     public void shouldReadEntitiesBasedOnMetadata() {
-        final PackageDescriptor package2345 = get2345Package();
+        final PackageDescriptor package2345 = CommonTestResources.get2345Package();
         final PackageReader packageReader = new PackageReader();
 
         try (final Stream<PackedTableMetadata> tableMetadataStream = packageReader.getPackageMetadata(package2345)) {
@@ -52,7 +48,7 @@ public class PackageReaderTest {
 
     @Test
     public void shouldReadEntitiesBasedOnMetadataFromDirectory() {
-        final PackageDescriptor package1234 = get1234Package();
+        final PackageDescriptor package1234 = CommonTestResources.get1234Package();
         final PackageReader packageReader = new PackageReader();
 
         try (final Stream<PackedTableMetadata> tableMetadataStream = packageReader.getPackageMetadata(package1234)) {
@@ -69,13 +65,17 @@ public class PackageReaderTest {
         }
     }
 
-    private PackageDescriptor get2345Package() {
-        final Path path = new File(ClassLoader.getSystemResource("updates1/").getPath()).toPath();
-        return new PackageDescriptor(2345L, PackageScope.DELTA_PACKAGE, PackageType.ARCHIVE, path);
-    }
+    @Test
+    public void shouldContainFile() {
+        final PackageDescriptor package2345 = CommonTestResources.get2345Package();
+        final PackageReader packageReader = new PackageReader();
 
-    private PackageDescriptor get1234Package() {
-        final Path path = new File(ClassLoader.getSystemResource("updates1/").getPath()).toPath();
-        return new PackageDescriptor(1234L, PackageScope.FULL_PACKAGE, PackageType.DIRECTORY, path);
+        final String entityFileName = packageReader.getEntityFileName(TestEntity1.class);
+        final boolean shouldContainFile = packageReader.doesContainFile(entityFileName, package2345);
+        assertTrue(shouldContainFile);
+
+        final String timestampedFileName = packageReader.getTimestampedFileName(TestEntity1.class);
+        final boolean shouldNotContainFile = packageReader.doesContainFile(timestampedFileName, package2345);
+        assertFalse(shouldNotContainFile);
     }
 }

@@ -1,5 +1,7 @@
 package com.marcin32.source.utils;
 
+import static java.util.Spliterator.ORDERED;
+
 import com.marcin32.source.base.Constants;
 import com.marcin32.source.base.PackageScope;
 import com.marcin32.source.base.PackageType;
@@ -10,15 +12,19 @@ import com.marcin32.source.model.CsvEntry;
 import com.marcin32.source.model.PackageDescriptor;
 import com.marcin32.source.model.PackageDescriptorForWriting;
 import com.marcin32.source.model.PackedTableMetadata;
-
 import java.io.IOException;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.Spliterators;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.stream.StreamSupport;
-
-import static java.util.Spliterator.ORDERED;
 
 public class DeltaProcessingUtil {
 
@@ -93,6 +99,7 @@ public class DeltaProcessingUtil {
                     .forEach(fileName -> processSingleFile(fileName,
                             currentFullPackage, previousFullPackage, deltaWriter));
 
+            // TODO: clean up this after debugging
             deltaWriter.finalizedrdr();
             currentFullPackage.finalizedrdr();
             previousFullPackage.finalizedrdr();

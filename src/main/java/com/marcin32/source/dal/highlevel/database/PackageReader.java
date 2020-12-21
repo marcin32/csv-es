@@ -3,12 +3,15 @@ package com.marcin32.source.dal.highlevel.database;
 import com.marcin32.source.base.Constants;
 import com.marcin32.source.base.PackageType;
 import com.marcin32.source.dal.highlevel.table.CachedTableReader;
-import com.marcin32.source.model.*;
+import com.marcin32.source.model.CsvEntry;
+import com.marcin32.source.model.ITableMetadata;
+import com.marcin32.source.model.PackageDescriptor;
+import com.marcin32.source.model.PackedTableMetadata;
+import com.marcin32.source.model.SourceEntry;
 import com.marcin32.source.model.csv.MetadataAdapter;
 import com.marcin32.source.model.file.AbstractFile;
 import com.marcin32.source.model.file.PackedFile;
 import com.marcin32.source.model.file.RawFile;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -24,15 +27,25 @@ class PackageReader implements IPackageDal {
     @Override
     public <ENTITYTYPE> Stream<SourceEntry<ENTITYTYPE>> readEntities(final Class<ENTITYTYPE> entityType,
                                                                      final PackageDescriptor packageDescriptor) {
-        final AbstractFile tableFile = getTableEntityFile(entityType, packageDescriptor);
-        return tableReader.readEntities(tableFile, entityType);
+        if (doesContainFile(getEntityFileName(entityType), packageDescriptor)) {
+            final AbstractFile tableFile = getTableEntityFile(entityType, packageDescriptor);
+            return tableReader.readEntities(tableFile, entityType);
+        } else {
+            // TODO: maybe add logging on trace level?
+            return Stream.empty();
+        }
     }
 
     @Override
     public <ENTITYTYPE> Stream<String> readUuidsOfTimestampedEntities(final Class<ENTITYTYPE> entityType,
                                                                       final PackageDescriptor packageDescriptor) {
-        final AbstractFile tableFile = getTableTimestampFile(entityType, packageDescriptor);
-        return tableReader.readUuidsOfTimestampedEntities(tableFile);
+        if (doesContainFile(getTimestampedFileName(entityType), packageDescriptor)) {
+            final AbstractFile tableFile = getTableTimestampFile(entityType, packageDescriptor);
+            return tableReader.readUuidsOfTimestampedEntities(tableFile);
+        } else {
+            // TODO: maybe add logging on trace level?
+            return Stream.empty();
+        }
     }
 
     @Override
@@ -68,8 +81,7 @@ class PackageReader implements IPackageDal {
     @Override
     public boolean doesContainFile(final String fileName, final PackageDescriptor packageDescriptor) {
         return getPackageMetadata(packageDescriptor)
-                .anyMatch(entry -> entry.equals(fileName));
-
+                .anyMatch(entry -> entry.getFileName().equals(fileName));
     }
 
     @Override
@@ -81,25 +93,34 @@ class PackageReader implements IPackageDal {
     public Stream<CsvEntry> readRawCsvEntries(final String fileName, final PackageDescriptor packageDescriptor) {
         final AbstractFile file = mapTableMetadataFile(new PackedTableMetadata(fileName, 0), packageDescriptor);
         return tableReader
-                .readRawCsvEntries(file);
+            .readRawCsvEntries(file);
     }
 
     <ENTITYTYPE> AbstractFile getTableTimestampFile(final Class<ENTITYTYPE> entityType,
-                                                    final PackageDescriptor packageDescriptor) {
+        final PackageDescriptor packageDescriptor) {
 
-        final String tableFileName = entityType.getSimpleName() + Constants.TIMESTAMPS_SUFFIX + Constants.TABLE_EXTENSION;
+        final String tableFileName = getTimestampedFileName(entityType);
         return getTableFile(tableFileName, packageDescriptor);
     }
 
-    <ENTITYTYPE> AbstractFile getTableEntityFile(final Class<ENTITYTYPE> entityType,
-                                                 final PackageDescriptor packageDescriptor) {
+    // TODO: Move this method (and similar ones) to common service
+    <ENTITYTYPE> String getTimestampedFileName(final Class<ENTITYTYPE> entityType) {
+        return entityType.getSimpleName() + Constants.TIMESTAMPS_SUFFIX + Constants.TABLE_EXTENSION;
+    }
 
-        final String tableFileName = entityType.getSimpleName() + Constants.TABLE_EXTENSION;
+    <ENTITYTYPE> String getEntityFileName(final Class<ENTITYTYPE> entityType) {
+        return entityType.getSimpleName() + Constants.TABLE_EXTENSION;
+    }
+
+    <ENTITYTYPE> AbstractFile getTableEntityFile(final Class<ENTITYTYPE> entityType,
+        final PackageDescriptor packageDescriptor) {
+
+        final String tableFileName = getEntityFileName(entityType);
         return getTableFile(tableFileName, packageDescriptor);
     }
 
     private AbstractFile getTableFile(final String fileName,
-                                      final PackageDescriptor packageDescriptor) {
+        final PackageDescriptor packageDescriptor) {
         final Pair<PackageDescriptor, String> packageFileKey = new Pair<>(packageDescriptor, fileName);
         if(openedFilesCache.containsKey(packageFileKey)) {
             return openedFilesCache.get(packageFileKey);
