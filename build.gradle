@@ -56,6 +56,14 @@ task sourcesJar(type: Jar, dependsOn: classes) {
 //    from javadoc.destinationDir
 //}
 
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
+
+tasks.withType(Test) {
+    systemProperty "file.encoding", "UTF-8"
+}
+
 artifacts {
     archives sourcesJar
     //archives javadocJar

@@ -1,5 +1,8 @@
 package com.marcin32.source.dal.highlevel.database;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.marcin32.source.TestEntity1;
 import com.marcin32.source.base.Constants;
 import com.marcin32.source.base.PackageScope;
@@ -7,15 +10,13 @@ import com.marcin32.source.base.PackageType;
 import com.marcin32.source.model.PackageDescriptor;
 import com.marcin32.source.model.PackageDescriptorForWriting;
 import com.marcin32.source.model.PackedTableMetadata;
+import com.marcin32.source.model.SourceEntry;
+import java.io.File;
+import java.nio.file.Path;
+import java.util.Optional;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-
-import java.io.File;
-import java.nio.file.Path;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class PackageWriterWrapperTest {
 
@@ -25,6 +26,7 @@ public class PackageWriterWrapperTest {
     @Test
     public void shouldWriteEntityTimestampsAndArchive() throws Exception {
 
+        final String specialDicritics = "ążćłó";
         final File tempDir = temporaryFolder.newFolder();
         final long timestamp = System.currentTimeMillis();
         final PackageDescriptorForWriting packageDescriptor = new PackageDescriptorForWriting(timestamp,
@@ -35,7 +37,7 @@ public class PackageWriterWrapperTest {
             final TestEntity1 testEntity1 = new TestEntity1("a", "a_content");
             final TestEntity1 testEntity2 = new TestEntity1("b", "b_content");
             final TestEntity1 testEntity3 = new TestEntity1("c", "c_content");
-            final TestEntity1 testEntity4 = new TestEntity1("d", "d_content");
+            final TestEntity1 testEntity4 = new TestEntity1("d", specialDicritics);
 
             packageWriterWrapper.storeEntity("a", testEntity1);
             packageWriterWrapper.storeEntity("b", testEntity2);
@@ -62,5 +64,12 @@ public class PackageWriterWrapperTest {
                 .count();
 
         assertEquals(countedEntities, numberOfEntitiesInMetadata);
+
+        final Optional<SourceEntry<TestEntity1>> dEntity = packageReaderWrapper
+            .readEntities(TestEntity1.class)
+            .filter(e -> e.getUuid().equals("d"))
+            .findFirst();
+        assertTrue(dEntity.isPresent());
+        assertEquals(specialDicritics, dEntity.get().getEntity().getContent());
     }
 }

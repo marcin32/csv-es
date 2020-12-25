@@ -1,19 +1,18 @@
 package com.marcin32.source.dal.lowlevel.file;
 
-import com.marcin32.source.model.file.RawFile;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
+import com.marcin32.source.model.file.RawFile;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 public class FileWriterTest {
 
@@ -22,7 +21,7 @@ public class FileWriterTest {
 
     @Test
     public void shouldWriteALine() throws IOException {
-        final String content = "testContentWriter";
+        final String content = "testContentWriterąężćłó";
         final String fileName = "testFile.txt";
         final File temporaryFolder = folder.newFolder();
 
