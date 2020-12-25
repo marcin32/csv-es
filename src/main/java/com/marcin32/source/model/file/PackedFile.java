@@ -6,6 +6,7 @@ import org.apache.commons.compress.archivers.tar.TarArchiveInputStream;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.Optional;
 import java.util.stream.Stream;
@@ -26,7 +27,7 @@ public class PackedFile extends AbstractFile {
     public Stream<String> readFile() throws IOException {
         final Optional<TarArchiveInputStream> tarEntry = FilesystemDal.getTarEntry(this, getFileName());
         if (tarEntry.isPresent()) {
-            final BufferedReader br = new BufferedReader(new InputStreamReader(tarEntry.get()));
+            final BufferedReader br = new BufferedReader(new InputStreamReader(tarEntry.get(), StandardCharsets.UTF_8));
             return br.lines();
         }
         return Stream.empty();
