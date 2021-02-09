@@ -1,5 +1,6 @@
 package com.marcin32.source.dal.highlevel.database;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
