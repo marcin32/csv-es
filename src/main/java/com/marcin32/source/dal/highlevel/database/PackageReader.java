@@ -10,15 +10,16 @@ import com.marcin32.source.model.PackedTableMetadata;
 import com.marcin32.source.model.SourceEntry;
 import com.marcin32.source.model.csv.MetadataAdapter;
 import com.marcin32.source.model.file.AbstractFile;
+import com.marcin32.source.model.file.EmptyFile;
 import com.marcin32.source.model.file.PackedFile;
 import com.marcin32.source.model.file.RawFile;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
 class PackageReader implements IPackageDal {
 
+    public static final EmptyFile EMPTY_FILE = new EmptyFile();
     private final CachedTableReader tableReader = new CachedTableReader();
 
     private final Map<Pair<PackageDescriptor, String>, AbstractFile> openedFilesCache = new HashMap<>();
@@ -127,21 +128,14 @@ class PackageReader implements IPackageDal {
             return openedFilesCache.get(packageFileKey);
         }
 
-        try {
-            final AbstractFile abstractFile = getPackageMetadata(packageDescriptor)
-                .filter(tableMetadata -> tableMetadata.getFileName().equals(fileName))
-                .findFirst()
-                .map(tableMetadata -> mapTableMetadataFile(tableMetadata, packageDescriptor))
-                .orElseThrow();
+        final AbstractFile abstractFile = getPackageMetadata(packageDescriptor)
+            .filter(tableMetadata -> tableMetadata.getFileName().equals(fileName))
+            .findFirst()
+            .map(tableMetadata -> mapTableMetadataFile(tableMetadata, packageDescriptor))
+            .orElse(EMPTY_FILE);
 
         openedFilesCache.put(packageFileKey, abstractFile);
         return abstractFile;
-        } catch (final NoSuchElementException noSuchElementException) {
-            System.err.println("Package " + packageDescriptor.getPackageName() + " expected to contain " +
-                fileName + " in metadata");
-            noSuchElementException.printStackTrace();
-        }
-        return null;
     }
 
     private AbstractFile mapTableMetadataFile(final ITableMetadata tableMetadataFile,
