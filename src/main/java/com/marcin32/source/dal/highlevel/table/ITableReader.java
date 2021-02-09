@@ -4,7 +4,6 @@ import com.marcin32.source.model.CsvEntry;
 import com.marcin32.source.model.SourceEntry;
 import com.marcin32.source.model.csv.ITableFormatAdapter;
 import com.marcin32.source.model.file.AbstractFile;
-
 import java.io.IOException;
 import java.util.stream.Stream;
 
@@ -23,6 +22,4 @@ public interface ITableReader {
     boolean checkWhetherTableMightContainHash(final String entityContentHash, final AbstractFile file);
 
     Stream<CsvEntry> readRawCsvEntries(final AbstractFile file);
-
-    public void finalizedrdr();
 }

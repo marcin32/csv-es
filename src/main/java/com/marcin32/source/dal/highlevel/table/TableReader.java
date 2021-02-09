@@ -4,7 +4,6 @@ import com.marcin32.source.model.CsvEntry;
 import com.marcin32.source.model.SourceEntry;
 import com.marcin32.source.model.csv.ITableFormatAdapter;
 import com.marcin32.source.model.file.AbstractFile;
-
 import java.util.Optional;
 import java.util.stream.Stream;
 
@@ -38,11 +37,6 @@ public class TableReader extends AbstractTableReader {
                                                      final AbstractFile file) {
         return readRawCsvEntries(file)
                 .anyMatch(entry -> entry.getShaContentHash().equals(entityContentHash));
-    }
-
-    @Override
-    public void finalizedrdr() {
-
     }
 
     static <ENTITYTYPE> Optional<SourceEntry<ENTITYTYPE>> deserializeEntity(final CsvEntry abstractEntity,

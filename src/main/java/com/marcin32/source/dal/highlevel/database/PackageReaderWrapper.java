@@ -57,10 +57,6 @@ public class PackageReaderWrapper {
         return packageReader.doesContainFile(fileName, packageDescriptor);
     }
 
-    public void finalizedrdr() {
-        packageReader.finalizedrdr();
-    }
-
     public Map<Boolean, Set<CsvEntry>> splitEntitiesIntoContainedOrNot(final String fileName,
                                                                        final List<CsvEntry> entitiesFromCurrentPackage) {
         final Map<Boolean, Set<CsvEntry>> containedToEntries = new HashMap<>();
@@ -70,9 +66,16 @@ public class PackageReaderWrapper {
         //        .collect(Collectors.toList());
 
 
+        final Set<String> entityNamesFromCurrentPackage = new HashSet<>();
         try (final Stream<CsvEntry> csvEntryStream = readRawCsvEntries(fileName)) {
             csvEntryStream
+                .peek(entryFromPreviousPackage -> entityNamesFromCurrentPackage.add(entryFromPreviousPackage.getUuid()))
                     .forEach(entryFromPreviousPackage -> assignToContainer(entryFromPreviousPackage, containedToEntries, entitiesFromCurrentPackage));
+        }
+        for (final CsvEntry entityFromCurrentPackage : entitiesFromCurrentPackage) {
+            if(!entityNamesFromCurrentPackage.contains(entityFromCurrentPackage.getUuid())) {
+                addToContainer(containedToEntries, entityFromCurrentPackage, false);
+            }
         }
 
         return containedToEntries;
@@ -87,6 +90,7 @@ public class PackageReaderWrapper {
                     .anyMatch(e ->e.getShaContentHash()
                             .equals((entryFromPreviousPackage.getShaContentHash())))) {
                 addToContainer(containedToEntries, entryFromPreviousPackage, true);
+                // TODO: double check, probably should be entryFromCurrentPackage
             } else {
                 addToContainer(containedToEntries, entryFromPreviousPackage, false);
             }

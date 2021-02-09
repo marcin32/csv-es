@@ -4,7 +4,6 @@ import com.marcin32.source.model.SourceEntry;
 import com.marcin32.source.model.csv.ITableFormatAdapter;
 import com.marcin32.source.model.file.AbstractFile;
 import com.marcin32.source.utils.BloomCache;
-
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Stream;
@@ -56,11 +55,5 @@ public class CachedTableReader extends AbstractTableReader {
         } else {
             stats.put(str, 1L);
         }
-    }
-
-    @Override
-    public void finalizedrdr() {
-
-        this.stats.forEach((key, value) -> System.out.println(key + " " + value));
     }
 }

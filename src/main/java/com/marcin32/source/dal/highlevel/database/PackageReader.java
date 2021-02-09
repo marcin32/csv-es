@@ -87,11 +87,6 @@ class PackageReader implements IPackageDal {
     }
 
     @Override
-    public void finalizedrdr() {
-        tableReader.finalizedrdr();
-    }
-
-    @Override
     public Stream<CsvEntry> readRawCsvEntries(final String fileName, final PackageDescriptor packageDescriptor) {
         final AbstractFile file = mapTableMetadataFile(new PackedTableMetadata(fileName, 0), packageDescriptor);
         return tableReader

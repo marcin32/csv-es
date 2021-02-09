@@ -1,5 +1,8 @@
 package com.marcin32.source.dal.highlevel.database;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import com.marcin32.source.TestEntity1;
 import com.marcin32.source.base.Constants;
 import com.marcin32.source.base.PackageScope;
@@ -7,16 +10,12 @@ import com.marcin32.source.base.PackageType;
 import com.marcin32.source.model.PackageDescriptor;
 import com.marcin32.source.model.PackageDescriptorForWriting;
 import com.marcin32.source.model.PackedTableMetadata;
-import org.junit.Rule;
-import org.junit.Test;
-import org.junit.rules.TemporaryFolder;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
-
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import org.junit.Rule;
+import org.junit.Test;
+import org.junit.rules.TemporaryFolder;
 
 public class PackageWriterTest {
 

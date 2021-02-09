@@ -5,7 +5,6 @@ import com.marcin32.source.model.CsvEntry;
 import com.marcin32.source.model.PackageDescriptorForWriting;
 import com.marcin32.source.utils.DeltaProcessingUtil;
 import com.marcin32.source.utils.FilesystemDal;
-
 import java.nio.file.Path;
 import java.util.Map;
 
@@ -57,9 +56,5 @@ public class PackageWriterWrapper implements AutoCloseable {
                 .stream()
                 .mapToLong(Map.Entry::getValue)
                 .sum() > 0;
-    }
-
-    public void finalizedrdr() {
-        //packageWriter.finalizedrdr();
     }
 }
