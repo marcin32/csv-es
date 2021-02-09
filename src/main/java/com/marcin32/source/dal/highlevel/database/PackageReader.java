@@ -14,6 +14,7 @@ import com.marcin32.source.model.file.PackedFile;
 import com.marcin32.source.model.file.RawFile;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
 class PackageReader implements IPackageDal {
@@ -126,13 +127,21 @@ class PackageReader implements IPackageDal {
             return openedFilesCache.get(packageFileKey);
         }
 
-        final AbstractFile abstractFile = getPackageMetadata(packageDescriptor)
+        try {
+            final AbstractFile abstractFile = getPackageMetadata(packageDescriptor)
                 .filter(tableMetadata -> tableMetadata.getFileName().equals(fileName))
                 .findFirst()
                 .map(tableMetadata -> mapTableMetadataFile(tableMetadata, packageDescriptor))
                 .orElseThrow();
+
         openedFilesCache.put(packageFileKey, abstractFile);
         return abstractFile;
+        } catch (final NoSuchElementException noSuchElementException) {
+            System.err.println("Package " + packageDescriptor.getPackageName() + " expected to contain " +
+                fileName + " in metadata");
+            noSuchElementException.printStackTrace();
+        }
+        return null;
     }
 
     private AbstractFile mapTableMetadataFile(final ITableMetadata tableMetadataFile,
