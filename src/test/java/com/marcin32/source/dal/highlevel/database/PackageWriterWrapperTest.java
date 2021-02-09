@@ -1,6 +1,5 @@
 package com.marcin32.source.dal.highlevel.database;
 
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
@@ -130,6 +129,7 @@ public class PackageWriterWrapperTest {
             packageWriterWrapper.storeEntity("d", testEntity4);
         }
 
+        // validate next delta package has changed and timestamped records
         final Optional<PackageReaderWrapper> latestDeltaPackage2 = PackageManager.getLatestDeltaPackage(workingDirPath);
         assertTrue(latestDeltaPackage2.isPresent());
         final long countOfEntries2 = latestDeltaPackage2.get().readEntities(TestEntity1.class).count();
@@ -139,5 +139,12 @@ public class PackageWriterWrapperTest {
             .readUuidsOfTimestampedEntities(TestEntity1.class)
             .collect(Collectors.toSet());
         assertThat(timestampedUuids, CoreMatchers.hasItems("a", "b"));
+
+        final Set<String> changedEntities = latestDeltaPackage2.get()
+            .readEntities(TestEntity1.class)
+            .map(SourceEntry::getEntity)
+            .map(TestEntity1::getContent)
+            .collect(Collectors.toSet());
+        assertThat(changedEntities, CoreMatchers.hasItems("c_content_new", "d_content_new"));
     }
 }
