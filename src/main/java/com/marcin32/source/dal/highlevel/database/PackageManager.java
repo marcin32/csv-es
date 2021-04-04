@@ -76,7 +76,8 @@ public final class PackageManager {
 
         final File[] files = FilesystemDal.listFiles(resolve);
 
-        return Arrays.stream(files)
+        return Stream.ofNullable(files)
+                .flatMap(Arrays::stream)
                 .map(PackageManager::tryToMatchDescriptor)
                 .filter(Optional::isPresent)
                 .map(Optional::get);
