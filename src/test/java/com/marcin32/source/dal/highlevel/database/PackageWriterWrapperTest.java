@@ -83,10 +83,11 @@ public class PackageWriterWrapperTest {
     @Test
     public void shouldCreateValidDeltaWhenPreviousPackageIsEmpty() throws IOException {
 
-        // Copy package to now temp dir
+        // Copy package to new temp dir
         final Path workingDirPath = temporaryFolder.newFolder().toPath();
         final Path workingDirPackagePath = workingDirPath.resolve("1234-FULL_PACKAGE.tar.gz");
-        final Path emptyPackagePath = new File(ClassLoader.getSystemResource("empty_package/1234-FULL_PACKAGE.tar.gz").getPath()).toPath();
+        final String emptyPackage = ClassLoader.getSystemResource("empty_package/1234-FULL_PACKAGE.tar.gz").getPath();
+        final Path emptyPackagePath = new File(emptyPackage).toPath();
         FilesystemDal.copyFile(emptyPackagePath, workingDirPackagePath);
 
         // create a new package
